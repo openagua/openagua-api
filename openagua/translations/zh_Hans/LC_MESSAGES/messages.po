@@ -1,0 +1,77 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version:  OpenAgua\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2017-01-04 13:17-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_Hans\n"
+"Language-Team: zh_Hans <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.3.4\n"
+
+#: ../OpenAgua/templates/index.html:20
+msgid "IMPORTANT!"
+msgstr ""
+
+#: ../OpenAgua/templates/index.html:20
+msgid ""
+"Thank you for your interest in OpenAgua. As we are in early stages of "
+"development, data is NOT SECURE. Please do not enter any sensitive "
+"information, such a password used elsewhere."
+msgstr ""
+
+#: ../OpenAgua/templates/index.html:38
+msgid "Collaborative water system modeling"
+msgstr ""
+
+#: ../OpenAgua/templates/index.html:66
+msgid ""
+"OpenAgua is a next-generation decision support system for water resources"
+" planning."
+msgstr ""
+
+#: ../OpenAgua/templates/index.html:68
+msgid ""
+"The goals of OpenAgua are to promote transparent collaboration between "
+"water management researchers, politicians, stakeholders and students, and"
+" to leverage cloud computing for solving complex water management "
+"challenges."
+msgstr ""
+
+#: ../OpenAgua/templates/index.html:77
+msgid "Main features"
+msgstr ""
+
+#: ../OpenAgua/templates/index.html:99
+msgid "Partners"
+msgstr ""
+
+#~ msgid ""
+#~ msgstr "随时从个人电脑上复制和帮助改进托管于 GitHub 的 OpenAgua 项目"
+
+#~ msgid "Planned features include:"
+#~ msgstr "设计中的性能包括："
+
+#~ msgid "Optimization-based simulation modeling of water resources systems."
+#~ msgstr "对水资源系统的优化模拟"
+
+#~ msgid "learn more"
+#~ msgstr "了解更多"
+
+#~ msgid "Flexible computing options, leveraging the power of cloud computing."
+#~ msgstr "灵活的计算选项，充分利用云计算能力"
+
+#~ msgid "Open source, with a BSD license."
+#~ msgstr "基于 BSD (伯克利软件套件)许可证 的开源"
+
+#~ msgid "Secure everything."
+#~ msgstr "安全保障"
+
+#~ msgid "Institutional partners"
+#~ msgstr "合作者机构"
+

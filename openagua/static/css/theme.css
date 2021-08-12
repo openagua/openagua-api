@@ -1,0 +1,515 @@
+.oa-app-name {
+    margin-left: 8px;
+}
+
+/*# After login*/
+
+.secondary-app {
+    position: fixed;
+    left: 0;
+    top: 50px;
+    right: 0;
+    bottom: 0;
+    padding: 1rem;
+    /* height: 100%; */
+    /* overflow: auto; */
+    overflow-y: auto;
+}
+
+/* Menu toggle button style */
+
+:focus {
+    outline: 0 !important;
+}
+
+/*
+ * Index page
+ */
+
+p.lead {
+    color: #336699;
+    font-size: xx-large;
+    margin-top: 25px;
+    line-height: normal;
+    font-weight: bold;
+}
+
+/*
+ * Base structure
+ */
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+    padding-top: 50px;
+}
+
+.modal-dialog {
+    margin-top: 150px !important;
+}
+
+.navbar a {
+    font-size: initial;
+    color: initial;
+    text-decoration: initial;
+}
+
+/*.main .page-header {*/
+/*margin-top: 0;*/
+/*}*/
+
+.btn {
+    border-radius: 0px;
+}
+
+.btn:focus, .btn:active {
+    outline: none !important;
+}
+
+.form-control {
+    border-radius: 0px;
+}
+
+/*
+ * Global add-ons
+ */
+
+.sub-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+
+.fullscreen-enabled {
+    background: white !important;
+}
+
+.oa-page-loader {
+    position: absolute;
+    height: 100px;
+    width: 100px;
+    top: 50%;
+    left: 50%;
+    margin-left: -50px;
+    margin-top: -50px;
+    /*background: url(/link/to/your/image);*/
+    /*background-size: 100%;*/
+}
+
+#page-content-wrapper {
+    /*margin-top: 50px;*/
+    padding: 0;
+}
+
+/*
+ * Fullscreen mode
+ */
+
+footer:-webkit-full-screen,
+footer:-moz-full-screen,
+footer:-o-full-screen,
+footer:-ms-full-screen {
+    display: none;
+}
+
+/*Spinner*/
+
+#spinner {
+    display: none;
+    position: fixed;
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 200px;
+    height: 200px;
+    z-index: 1000000;
+    border-radius: 15px;
+    background: rgba(211, 225, 240, 0.9);
+}
+
+#spinner p {
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    color: black;
+}
+
+/*Prevents clicking the background when spinner is on*/
+#spinner .prevent-click {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+/*autocomplete*/
+
+.autocomplete-suggestions {
+    border: 1px solid #999;
+    background: #FFF;
+    overflow: auto;
+}
+
+.autocomplete-suggestion {
+    padding: 2px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.autocomplete-selected {
+    background: #F0F0F0;
+}
+
+.autocomplete-suggestions strong {
+    font-weight: normal;
+    color: blue;
+}
+
+.autocomplete-group {
+    padding: 3px 0 3px 0;
+}
+
+.autocomplete-group strong {
+    color: black;
+    /*font-weight: bold;*/
+    font-size: large;
+    display: block;
+    background-color: #ddd;
+    padding: 3px;
+    /*border-bottom: 1px solid #000;*/
+}
+
+.footer {
+    z-index: 1000;
+}
+
+/* 
+ * blueprint action bars
+ */
+
+.actions-bar {
+    padding: 3px 10px 5px 10px;
+    margin: 0;
+    z-index: 5;
+}
+
+.actions-bar .form-group {
+    margin-top: 3px;
+    margin-bottom: 0;
+    display: inline-block;
+}
+
+.actions-bar-top {
+    padding: 5px;
+    border-bottom: grey thin solid;
+}
+
+.actions-bar-bottom {
+    position: fixed !important;
+    bottom: 0;
+    border-top: grey thin solid;
+}
+
+.oa-button {
+    color: #5c7080 !important;
+    display: flex !important;
+    align-items: center;
+    padding: 5px !important;
+}
+
+.oa-button .oa-icon {
+    display: inline-flex;
+    text-align: center;
+    width: 24px;
+    margin: auto;
+}
+
+.oa-button .oa-label {
+    display: inline;
+    margin-left: 7px;
+}
+
+.oa-button.disabled, .oa-button.disabled svg {
+    color: #5c708099 !important;
+}
+
+.oa-menu-item {
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+}
+
+.oa-menu-item .oa-label {
+    display: inline;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.oa-menu-item .icon {
+    display: inline-flex;
+    text-align: center;
+    width: 24px;
+}
+
+.oa-menu-item .head {
+    display: inline;
+}
+
+.oa-menu-item .icon.secondary {
+    margin-left: auto;
+}
+
+.oa-menu-item h6 {
+    display: inline-flex;
+    align-items: center;
+}
+
+.oa-menu-item .icon svg {
+    margin: auto;
+}
+
+/*misc*/
+
+.tooltip {
+    z-index: 999999;
+}
+
+.tooltip-inner {
+    text-align: left;
+}
+
+.slider-box {
+    margin: 5px 0 5px 0;
+}
+
+.slider-horizontal {
+    margin: 0 10px 0 10px;
+}
+
+.table {
+    border-top: thin lightgrey solid;
+    border-bottom: thin lightgrey solid;
+}
+
+/*Alerts*/
+
+/*Messages*/
+
+.alert-message {
+    background-color: #2b5177;
+    border-color: black;
+    border-radius: 3px;
+    /*color: rgb(149, 149, 149);*/
+    color: whitesmoke;
+    padding: 10px 15px 10px 15px;
+    box-shadow: 0 0 2px grey;
+}
+
+/*.alert-message > [data-notify="icon"] {*/
+/*height: 50px;*/
+/*margin-right: 12px;*/
+/*}*/
+/*.alert-message > [data-notify="title"] {*/
+/*color: rgb(51, 51, 51);*/
+/*!*display: block;*!*/
+/*font-weight: bold;*/
+/*!*margin-bottom: 5px;*!*/
+/*}*/
+.alert-message > [data-notify="message"] {
+    font-size: 110%;
+    margin-left: 0;
+}
+
+.oa-spinner-wrapper {
+    display: flex;
+}
+
+.oa-spinner {
+    display: flex !important;
+    margin: 30px auto;
+}
+
+.oa-spinner-small {
+    display: flex !important;
+    margin: 2px auto;
+}
+
+/*CONTROLS*/
+
+.oa-button-group .oa-button {
+    display: inline-block;
+    /*margin: 0.3em;*/
+}
+
+.ql-container {
+    background: white;
+}
+
+.bp3-portal {
+    z-index: 100000;
+}
+
+.template-icon {
+    display: inline-flex;
+    margin: 3px;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+}
+
+.template-icon svg {
+    margin: auto;
+}
+
+/*.oa-icon {*/
+/*color: #5c7080;*/
+/*!*TODO: sync with blueprintjs scss*!*/
+/*}*/
+
+.dialog-title-icon {
+    margin-right: 10px;
+}
+
+.sub-app {
+    /*position: absolute;*/
+    top: 50px;
+    bottom: 0;
+    position: fixed;
+    /*top: 50px;*/
+    /*bottom: 0;*/
+    left: 0;
+    right: 0;
+    overflow: auto;
+}
+
+#navbar a {
+    text-decoration: none !important;
+    color: white !important;
+}
+
+.oa-menu-header {
+    padding: 7px;
+}
+
+.oa-navmenu-link a {
+    /*display: flex;*/
+    /*align-items: center;*/
+    /*text-decoration: none !important;*/
+    /*color: rgb(24, 32, 38) !important;*/
+    /*TODO: sync with blueprint colors via scss*/
+}
+
+.oa-favorite-menuitem {
+    display: block;
+}
+
+.bp3-active .oa-favorite-helper-text {
+    color: #ddd;
+}
+
+.bp3-tabs.bp3-vertical > .bp3-tab-list .bp3-tab {
+    display: flex;
+}
+
+.bp3-tab a {
+    height: 100%;
+    text-decoration: none;
+    color: initial;
+}
+
+.bp3-tab a:hover {
+    text-decoration: none;
+    color: initial;
+}
+
+.oa-popover-content {
+    padding: 15px;
+    min-width: 400px;
+}
+
+.oa-pill-text {
+    border: thin grey solid;
+    border-radius: 50px;
+    margin-left: 10px;
+    padding: 1px 10px;
+    /* color: white; */
+    /* background: darkblue; */
+    font-size: small;
+}
+
+.popover-target-fill {
+    width: 100%;
+}
+
+.oa-clickable-icon:hover {
+    cursor: pointer;
+}
+
+.oa-favorite-name {
+    margin: 0 5px;
+    width: 200px;
+}
+
+.oa-fixed-button .bp3-button-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: auto;
+}
+
+.oa-section-header {
+    color: #4d7198;
+}
+
+.CodeMirror pre {
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+.CodeMirror.fullscreen {
+    position: absolute !important;
+}
+
+.editor-toolbar.fullscreen {
+    position: absolute !important;
+    z-index: 10 !important;
+}
+
+.oa-dialog-markdown .CodeMirror {
+    min-height: 150px;
+    height: 150px;
+    padding: 0;
+}
+
+.oa-dialog-markdown .CodeMirror-scroll {
+    min-height: 150px;
+    max-height: 150px;
+}
+
+.oa-menu-item-row {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    border-radius: 2px;
+    /*padding: 5px 7px;*/
+    text-decoration: none;
+    /* line-height: 20px; */
+    color: inherit;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/*Pivot input/output*/

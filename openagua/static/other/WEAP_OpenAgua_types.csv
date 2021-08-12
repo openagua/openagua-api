@@ -1,0 +1,25 @@
+TypeID,WEAP,OpenAgua
+1,Demand Site,General Demand
+2,Wastewater Treatment Plant,Wastewater Treatment
+3,Groundwater,Groundwater
+4,Reservoir,Reservoir
+5,Other Supply,Misc Source
+6,River,River
+7,Transmission Link,Delivery Link
+8,Return Flow,Return Flow
+9,Flow Requirement,Flow Requirement
+10,River Withdrawal,Junction
+11,Diversion Outflow,Junction
+12,Other Surface Inflow,Junction
+13,Tributary Inflow,Junction
+14,Run of River Hydro,Hydropower
+15,Diversion,Conveyance
+16,River Reach,River
+17,Return Flow Node,Junction
+18,Storage Node,Junction
+19,Atmosphere,Outflow Node
+20,Streamflow Gauge,Streamflow Gauge
+21,Catchment,Catchment
+22,Runoff/Infiltration,Runoff/Infiltration
+23,Catchment Inflow Node,Junction
+24,Hydropower,Hydropower

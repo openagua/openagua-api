@@ -1,0 +1,40 @@
+/*
+ * Navbar
+ */
+
+.oa-navbar-brand {
+    display: flex;
+    align-items: flex-end;
+    font-size: large !important;
+    color: black !important
+}
+
+.navbar {
+    background-color: #fff;
+    box-shadow: 0 0 3px grey;
+}
+
+.navbar-toggle {
+    background-color: lightgrey;
+}
+.navbar-toggle i {
+    color: grey
+}
+
+.language {
+    position: absolute;
+    top: 10px
+}
+
+.language button {
+    border-color: black !important;
+    background-color: grey !important;
+    height: 30px;
+    padding: 5px;
+}
+
+/*General*/
+
+.oa-content-with-margin {
+    margin: 25px;
+}

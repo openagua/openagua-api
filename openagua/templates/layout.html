@@ -1,0 +1,90 @@
+{% import 'macros.html' as macros with context %}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, shrink-to-fit=no, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+
+    <title>{{config["APP_NAME"]}}{% block title %}{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}"/>
+
+    <!--jQuery-->
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+
+    <!--Bootstrap-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" media="all"
+          rel="stylesheet" type="text/css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/solid.css"
+          integrity="sha384-QokYePQSOwpBDuhlHOsX0ymF6R/vLk/UQVz3WHa6wygxI5oGTmDTv8wahFOSspdm"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/brands.css"
+          integrity="sha384-n9+6/aSqa9lBidZMRCQHTHKJscPq6NW4pCQBiMmHdUCvPN8ZOg2zJJTkC7WIezWv" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/fontawesome.css"
+          integrity="sha384-vd1e11sR28tEK9YANUtpIOdjGW14pS87bUBuOIoBILVWLFnS+MCX9T6MMf0VdPGq"
+          crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css"/>
+
+    <script src="{{ url_for('static', filename='js/language.js') }}"></script>
+
+    <script>
+        var language = '{{ session['language'] }}';
+    </script>
+
+    {% include 'navbar-index.html' %}
+
+    {% block apphead %}{% endblock %}
+
+</head>
+
+<body>
+
+{% block appbody %}
+{% endblock %}
+
+<footer class="footer">
+    <div class="container">
+        {% include "footer.html" %}
+    </div>
+</footer>
+
+{% block appscripts %}{% endblock %}
+
+<div id="cookieconsent"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+<script>
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000"
+    },
+    "button": {
+      "background": "#f1d600"
+    }
+  },
+  "content": {
+    "message": "This website uses cookies to keep you logged in.",
+    "dismiss": "Got it!",
+    "link": "Learn more",
+    "href": "/cookies"
+  }
+});
+</script>
+
+</body>
+</html>

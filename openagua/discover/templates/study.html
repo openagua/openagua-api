@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+{% block title %} - Project{% endblock %}
+{% block head_main %}
+
+    <link rel="stylesheet" href="{{ url_for('node_modules', filename='leaflet/dist/leaflet.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='lib/leaflet/zoombox/L.Control.ZoomBox.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='lib/leaflet/basemaps/L.Control.Basemaps.css') }}"/>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='lib/leaflet/condensedattribution/leaflet-control-condended-attribution.css') }}"/>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='lib/leaflet/coordinates/Leaflet.Coordinates-0.1.5.css') }}"/>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='lib/leaflet/markercluster/MarkerCluster.Default.css') }}"/>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='lib/leaflet/markercluster/MarkerCluster.css') }}"/>
+
+    <link href="{{ url_for('.static', filename='css/discover.css') }}" media="all" rel="stylesheet"
+          type="text/css"/>
+
+    <script src="{{ url_for('node_modules', filename='leaflet/dist/leaflet.js') }}"></script>
+
+    <script>
+        var MAPBOX_ACCESS_TOKEN = "{{ config['MAPBOX_ACCESS_TOKEN'] }}"
+        var useGoogleMaps = true;
+    </script>
+
+
+    {% if config['GOOGLE_PLACES_API_KEY'] %}
+
+        <script>var validGoogleApiKey = true</script>
+
+        <!--Load Google Places JavaScript API-->
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ config['GOOGLE_PLACES_API_KEY'] }}&libraries=places"
+                async defer></script>
+
+        <!--Google Places autocomplete-->
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='lib/leaflet/leaflet-google-places-autocomplete/css/leaflet-gplaces-autocomplete.css') }}"/>
+        <script src="{{ url_for('static', filename='lib/leaflet/leaflet-google-places-autocomplete/js/leaflet-gplaces-autocomplete.js') }}"></script>
+
+        <!--Leaflet.GridLayer.GoogleMutant-->
+        <script src="{{ url_for('static', filename='lib/leaflet/googlemutant/Leaflet.GoogleMutant.js') }}"></script>
+
+    {% else %}
+        <script>var validGoogleApiKey = false</script>
+    {% endif %}
+
+    {% include 'discover-navbar.html' %}
+
+    <script>
+    study = {{ study }};
+    </script>
+
+{% endblock %}
+
+{% block body %}
+
+    <!--network editor-->
+    <div id='map-wrapper'>
+        <div id="map"></div>
+    </div>
+
+{% endblock %}
+
+{% block appscripts %}
+
+    <script src="{{ url_for('static', filename='lib/leaflet/geometryutil/leaflet.geometryutil.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/leaflet/zoombox/L.Control.ZoomBox.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/leaflet/basemaps/L.Control.Basemaps.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/leaflet/condensedattribution/leaflet-control-condended-attribution.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/leaflet/coordinates/Leaflet.Coordinates-0.1.5.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/leaflet/svg-icon/svg-icon.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/leaflet/control-custom/Leaflet.Control.Custom.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/leaflet/deflate/L.Deflate.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.5/leaflet.markercluster.js"></script>
+
+{#    OpenAgua#}
+    <script src="{{ url_for('.static', filename='js/discover-functions.js') }}"></script>
+    <script src="{{ url_for('.static', filename='js/discover.js') }}"></script>
+    <script src="{{ url_for('.static', filename='js/discover-study.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+*.ipynb
+*.pyc
+*.log
+
+instance/
+migrations/
+data/
+
+.models/
+.projectfiles/
+.userfiles/*
+
+# pycharm folder
+.idea/
+*.code-workspace
+
+docs/site/
+
+# node modules
+node_modules/
+openagua/static/dist/
+openagua/templates/dist/
+openagua/project/dist/
+openagua/project/templates/dist/
+v8-compile-*
+tmp/
+
+venv/
+
+.yarn-cache.tgz
+.env
+hydra.ini
+
+.vscode

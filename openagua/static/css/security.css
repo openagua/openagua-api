@@ -1,0 +1,56 @@
+/*General*/
+
+.no-margins {
+    margin: 0px;
+}
+
+.with-margin {
+    margin: 50px 0 0 0;
+}
+
+.col-centered {
+    float: none;
+    margin: 0 auto;
+    padding: 15px;
+    /*background-color: #eef4f7;*/
+    /*border-color: whitesmoke;*/
+    /*border-width: 1px;*/
+    /*border-style: solid;*/
+    /*border-radius: 5px;*/
+    /*-moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);*/
+    /*-webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);*/
+    /*box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);*/
+}
+
+body {
+    /*background-color: steelblue;*/
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+h1 {
+    font-size: xx-large;
+    text-align: center;
+    margin-bottom: 25px;
+    margin-top: 25px;
+}
+
+label, .label {
+    font-weight: bold;
+    font-size: medium;
+    color: black;
+}
+
+/*Sign in page*/
+
+input#remember {
+    display: inline;
+}
+
+.security-form {
+    max-width: 350px;
+}
+
+.security-form .alert {
+    margin-top: 20px;
+}

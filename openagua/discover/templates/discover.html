@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+{% block apphead %}
+
+    <script
+            src="http://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+    <!--Load Google Places JavaScript API-->
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ config['GOOGLE_PLACES_API_KEY'] }}&libraries=places"
+            async defer></script>
+
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+          integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+          crossorigin=""/>
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/L.Control.Basemaps.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/discover.css') }}"/>
+
+
+{% endblock %}
+
+{% block appbody %}
+
+    <script>
+        var MAPBOX_ACCESS_TOKEN = "{{ config['MAPBOX_ACCESS_TOKEN'] }}";
+        {% if config['USE_GOOGLE'] %}
+            var useGoogle = true;
+        {% else %}
+            var useGoogle = false;
+        {% endif %}
+    </script>
+
+
+    {% if config['USE_GOOGLE'] and config['GOOGLE_PLACES_API_KEY'] %}
+
+        <script>var validGoogleApiKey = true</script>
+
+
+        <!--Google Places autocomplete-->
+        <link rel="stylesheet"
+              href="{{ url_for('.static', filename='css/leaflet-gplaces-autocomplete.css') }}"/>
+
+    {% else %}
+        <script>var validGoogleApiKey = false</script>
+    {% endif %}
+
+    <script>
+        discoverMap = "{{ config['MAPBOX_DISCOVER_MAP'] }}"
+    </script>
+
+    {% include 'discover-navbar.html' %}
+
+    <!--network editor-->
+    <div id='map-wrapper'>
+        <div id="map"></div>
+    </div>
+
+{% endblock %}
+
+{% block appscripts %}
+
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+            integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+            crossorigin=""></script>
+
+    <script src="{{ url_for('.static', filename='js/leaflet-gplaces-autocomplete.js') }}"></script>
+
+    <!--Leaflet.GridLayer.GoogleMutant-->
+    <script src="{{ url_for('.static', filename='js/Leaflet.GoogleMutant.js') }}"></script>
+
+    <script src="{{ url_for('.static', filename='js/leaflet.geometryutil.js') }}"></script>
+    <script src="{{ url_for('.static', filename='js/L.Control.Basemaps.js') }}"></script>
+    <script src="{{ url_for('.static', filename='js/svg-icon.js') }}"></script>
+    <script src="{{ url_for('.static', filename='js/L.Deflate.js') }}"></script>
+
+    {#    OpenAgua#}
+    <script src="{{ url_for('.static', filename='js/discover-functions.js', v=config['VERSION']) }}"></script>
+    <script src="{{ url_for('.static', filename='js/discover.js', v=config['VERSION']) }}"></script>
+    <script src="{{ url_for('.static', filename='js/discover-general.js', v=config['VERSION']) }}"></script>
+
+{% endblock %}

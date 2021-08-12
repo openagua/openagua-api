@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}Page Not Found{% endblock %}
+{% block appbody %}
+<div class="container">
+
+    <div class="row">
+        <!--<div class="col-md-4 col-md-offset-4"></div>-->
+            <h2>Page not found (404)</h1>
+                <p>If you believe this is an error, please contact the site administrator.</p>
+            <br>
+            <div>
+                <button class="btn btn-primary text-center" onclick="goBack()">Go Back</button>
+            </div>
+        <!--</div>-->
+    </div>
+</div>
+
+<script>
+function goBack() {
+    window.history.back();
+}
+</script>
+  
+{% endblock %}

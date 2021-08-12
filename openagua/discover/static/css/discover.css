@@ -1,0 +1,253 @@
+#add_node_error {
+    font-weight: bold;
+    color: red;
+}
+
+.leaflet-container {
+    background-color: whitesmoke;
+}
+
+.leaflet-touch .leaflet-control-layers-toggle {
+    width: 30px;
+    height: 30px;
+}
+
+.leaflet-bar, .leaflet-control-layers {
+    box-shadow: none;
+    border-radius: 2px;
+    border: 2px grey solid;
+}
+
+.leaflet-bar a:first-child {
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+}
+
+.leaflet-bar a:last-child {
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+.modal img {
+    margin: 2px;
+}
+
+.leaflet-end-icon {
+    width: 0;
+    height: 0;
+}
+
+.leaflet-interactive {
+    stroke-dasharray: 0;
+}
+
+.leaflet-left .leaflet-control {
+    margin-left: 15px;
+}
+
+.leaflet-draw {
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 5px;
+    border: 1px grey solid;
+    box-shadow: 0 0 2px grey;
+    border-radius: 4px;
+    /* opacity: 0.6; */
+}
+
+.leaflet-draw-toolbar {
+    margin: 0;
+}
+
+.leaflet-draw-toolbar-top {
+    margin-bottom: 5px;
+}
+
+.leaflet-draw-tooltip {
+    display: none;
+}
+
+.leaflet-marker-icon.leaflet-div-icon.leaflet-editing-icon.leaflet-zoom-animated.leaflet-interactive {
+    margin-left: -5px !important;
+    margin-top: -5px !important;
+    width: 10px !important;
+    height: 10px !important;
+    background-color: white;
+    border: thin black solid;
+    border-radius: 10px;
+}
+
+.leaflet-marker-icon.leaflet-editing-icon.leaflet-zoom-animated.leaflet-interactive.leaflet-marker-draggable {
+    /*display: none;*/
+    margin-left: -5px !important;
+    margin-top: -5px !important;
+    width: 10px !important;
+    height: 10px !important;
+    background-color: white;
+    border: thin black solid;
+    border-radius: 10px;
+}
+
+.basemaps {
+    margin: 0 !important;
+}
+
+.leaflet-condensed-attribution .attributes-body {
+    display: none;
+    padding: 5px 10px 5px 12px;
+    height: initial;
+    line-height: initial;
+}
+
+.leaflet-contextmenu-item-disabled {
+    opacity: 1 !important;
+}
+
+.leaflet-contextmenu .contextmenu-icon {
+    width: 12px;
+    display: inline-block;
+}
+
+.feature-name {
+    /*font-size: medium;*/
+    font-weight: bold;
+}
+
+.leaflet-bar button:first-of-type {
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+}
+
+.leaflet-bar button:last-of-type {
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-bottom: none;
+}
+
+.actions-bar-top {
+    box-shadow: 0px 0px 1px 0px black;
+    z-index: 5000;
+}
+
+.leaflet-draw.leaflet-control, .leaflet-bottom.leaflet-left {
+    z-index: 500;
+}
+
+.leaflet-gac-control {
+    font-size: small;
+    height: 32px !important;
+    border: thin grey solid !important;
+    padding: 6px 12px 6px 12px !important;
+    box-shadow: 0 0 3px grey;
+}
+
+.leaflet-gac-control:focus {
+    box-shadow: 0 0 5px 0 black;
+    border: thin black solid;
+}
+
+.close-icon {
+    /*border:1px solid transparent;*/
+    /*background-color: transparent;*/
+    display: inline-block;
+    vertical-align: middle;
+    outline: 0;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
+
+.bootstrap-select.feature-search {
+    font-size: small;
+    /*height: 33px !important;*/
+    border: thin grey solid !important;
+    box-shadow: 0 0 3px grey;
+    z-index: 1000;
+}
+
+.bootstrap-select > .dropdown-toggle.bs-placeholder, .bootstrap-select > .dropdown-toggle.bs-placeholder:active, .bootstrap-select > .dropdown-toggle.bs-placeholder:focus, .bootstrap-select > .dropdown-toggle.bs-placeholder:hover {
+    border: none;
+}
+
+/*map sidebar*/
+
+.sidebar-header {
+    background-color: #337ab7;
+}
+
+.sidebar-tabs {
+    background: rgba(255, 255, 255, 0.75);
+}
+
+.sidebar-tabs > li.active, .sidebar-tabs > ul > li.active, .sidebar-tabs > ul > li.active a:hover {
+    background-color: #337ab7;
+}
+
+.sidebar-tabs a:hover {
+    background-color: rgba(181, 209, 255, 1);
+}
+
+.sidebar-right {
+    right: 0;
+    bottom: 5;
+}
+
+.sidebar {
+    border-radius: 0px;
+    /*border-width: 1px 0 1px 1px !important;*/
+    border-right-width: 0 !important;
+}
+
+.sidebar-content h2 {
+    font-size: medium;
+    font-weight: bold;
+}
+.sidebar-content h3 {
+    font-size: small;
+    font-weight: bold;
+}
+
+.sidebar-header {
+    padding-left: 40px;
+    margin-bottom: 15px;
+}
+
+.sidebar-content label {
+    font-size: small;
+    font-weight: normal;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .sidebar-right ~ .sidebar-map .leaflet-right {
+        right: 305px;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .sidebar-right ~ .sidebar-map .leaflet-right {
+        right: 390px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .sidebar-right ~ .sidebar-map .leaflet-right {
+        right: 460px;
+    }
+}
+
+@media (min-width: 768px) {
+    .sidebar-right.collapsed ~ .sidebar-map .leaflet-right {
+        right: 40px;
+    }
+}
+
+/*ICONS*/
+
+.node.reference.editing {
+    opacity: 0.5;
+    cursor: inherit;
+}
+
+.link.reference.editing {
+    opacity: 0.5;
+    cursor: inherit;
+}

@@ -1,0 +1,15 @@
+<h2 style="text-align:center">{{ _("Hello") }}</h2>
+
+<p>Greetings, and welcome to OpenAgua!</p>
+
+{% if security.confirmable %}
+
+    <p>To complete your registration, please confirm your email using the link below:</p>
+
+    <p><a href="{{ confirmation_link }}">Confirm my account</a></p>
+
+    <p>If you did not register with us, please simply ignore this email.</p>
+    <p>With best wishes,</p>
+    <p>The OpenAgua team</p>
+
+{% endif %}

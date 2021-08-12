@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, shrink-to-fit=no, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+
+    <title>{{ config['APP_NAME'] }}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}"/>
+
+    <script>
+        let appname = "{{ config['APP_NAME'] }}";
+        const installType = '{{ config['INSTALL_TYPE'] }}';
+        {#    var online = {{ session['online']|lower }};#}
+        const online = true;
+        let currentUser = {id: {{ current_user.id }}, email: "{{current_user.email}}", roles: []};
+        {% for role in current_user.roles %}
+            currentUser.roles.push("{{ role.name }}");
+        {% endfor %}
+        currentUser.isAdmin = currentUser.roles.includes('admin') || currentUser.roles.includes('superuser');
+    </script>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_SVG' async></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/classnames/2.2.5/index.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom4/1.8.3/dom4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>#}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/handsontable/7.0.2/handsontable.full.min.css"
+          integrity="sha256-g1urxBZBUie7IowEKQ6htW8g39uttP6QEJXJGms/CVQ=" crossorigin="anonymous"/>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.3/leaflet.draw.css"
+          integrity="sha256-djciAVNu/Ncypcy8WLyrWV/I9Xv2PpUtDF7rsj0pGyA=" crossorigin="anonymous"/>
+
+    {#    resizer#}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/resizer.css') }}"/>
+
+    {# blueprintjs#}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+          integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous"/>
+
+    {#    codemirror#}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.css"
+          integrity="sha256-I8NyGs4wjbMuBSUE40o55W6k6P7tu/7G28/JGUUYCIs=" crossorigin="anonymous"/>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/5.26.3/jsoneditor.min.css"
+          integrity="sha256-WlGacygikQ6aS2l2d7jv3+KyeeJ3E9pN388BYXRG3Xk=" crossorigin="anonymous"/>
+
+    <style>
+        #app-root {
+            height: 0;
+        }
+    </style>
+
+    <script>
+        const app = "{{ app }}";
+        let messages = {{ session.get('messages', []) }};
+        let init = {};
+        const version = "{{ config['VERSION'] }}";
+    </script>
+
+</head>
+
+<body></body>
+
+</html>

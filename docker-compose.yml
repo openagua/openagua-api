@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./log/nginx:/var/log/nginx
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/sites-enabled:/etc/nginx/sites-enabled
+      - ./nginx/proxy_params:/etc/nginx/proxy_params
+      - ./ssl:/ssl
+      - static-content:/static
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - app
+#      - rabbitmq
+  app:
+    image: registry.gitlab.com/flowdirections/openagua:latest
+    container_name: openagua
+    ports:
+      - 5000:5000
+    env_file:
+      - .env
+    volumes:
+      - ./instance:/app/instance
+      - static-content:/static
+#    depends_on:
+#      - rabbitmq
+    entrypoint: bash -c "cp -r /app/openagua/static /static && python app.py"
+#  rabbitmq:
+#    image: rabbitmq:3-management-alpine
+#    container_name: rabbitmq
+#    hostname: rabbitmq
+#    volumes:
+#      - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
+#      - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
+#      - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
+#    ports:
+#      - 5672:5672
+#      - 15672:15672
+#    environment:
+#      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+#      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+
+volumes:
+  static-content:

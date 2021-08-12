@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block apphead %}
+
+    <link href="{{ url_for('static', filename='css/landing-page.css') }}" media="all" rel="stylesheet" type="text/css"/>
+
+    {% import 'macros.html' as macros %}
+
+    {% include 'navbar-index.html' %}
+
+{% endblock %}
+
+{% block appbody %}
+
+    {{ macros.messages() }}
+
+    <div id='index'>
+        {% include 'index-content.html' %}
+    </div>
+
+{% endblock %}

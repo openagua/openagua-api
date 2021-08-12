@@ -1,0 +1,153 @@
+/*
+ * General
+ */
+
+.highlight-phone .buttons button {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#partners img {
+    max-width: 100%;
+}
+
+#index h1 {
+    margin-bottom: 5px;
+}
+
+#index .description {
+    font-size: large;
+}
+ 
+.index {
+    margin-top: 15px;
+}
+
+#partners img {
+    padding: 10px;
+    margin: 10px;
+    width: 100%;
+    border: thin lightgrey solid;
+    border-radius: 15px;
+}
+
+/*
+ *Carousel
+ */
+
+@font-face {
+    font-family: canter_bold;
+    src: url(../fonts/Canter_Bold.otf);
+}
+
+.carousel-inner > .item {
+    height: 175px;
+    overflow: hidden;
+}
+
+.carousel-inner>.item>img.main-image {
+    width: 100%;
+    min-width: 1800px;
+    min-height: 600px;
+}
+
+img.corner-logo {
+    position: absolute;
+    z-index: 500;
+    top: 0;
+    opacity: 0.7;
+    /*width: 20%;*/
+    max-height: 175px;
+}
+
+h1.carousel-brand {
+    font-family: canter_bold;
+    font-weight: bold;
+    font-size: 72px;
+    text-shadow: 0 0 10px black;
+    display: block;
+}
+
+#carousel {
+    overflow: hidden;
+}
+
+#carousel h3 {
+    font-size: x-large;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    text-shadow: 0 0 10px black;
+}
+
+#carousel p {
+    font-size: large;
+    text-shadow: 0 0 10px black;
+}
+
+.carousel-inner > .item > img.main-image {
+    position: absolute;
+    top: -9999px;
+    bottom: -9999px;
+    left: -9999px;
+    right: -9999px;
+    margin: auto;
+}
+
+.carousel-caption {
+    padding: 0;
+    margin: 0;
+}
+
+.carousel-background {
+    height: 100%;
+    width: 100%;
+    border: none;
+    background-color: black;
+    top: 0;
+    left: 0;
+    opacity: 0.3;
+    z-index: -1;
+}
+
+.carousel-brand {
+    margin: 0;
+}
+
+.carousel-caption .title {
+    margin-bottom: 0;
+}
+
+
+@media screen and (max-width: 480px) {
+    .carousel-inner > .item {
+        height: 175px;
+    }
+    .carousel-inner h3, .carousel-inner .title {
+        font-size: medium !important;
+    }
+    .carousel-inner h3 {
+        display: none;
+    }
+    .carousel-brand {
+        font-size: 64px !important;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .carousel-inner > .item {
+        height: 175px;
+    }
+    .carousel-inner h3, .carousel-inner .title {
+        font-size: medium !important;
+    }
+    .carousel-brand {
+        font-size: 64px !important;
+    }
+}
+
+.twitter-feed {
+    margin: 20px 10px 10px 10px;
+    padding: 10px;
+    border: thin grey solid;
+    border-radius: 5px;
+}

@@ -1,0 +1,11 @@
+__pycache__
+migrations
+instance
+data
+**/dist
+.gitlab-*
+.git
+.idea
+.ipynb_*
+.env
+.log

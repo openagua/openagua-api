@@ -1,0 +1,22 @@
+VariableID,WEAP,OpenAgua
+4,Maximum Diversion,Flow Capacity
+27,Annual Activity Level,n/a
+190,Streamflow Data,Observed Flow
+221,Priority,Priority
+847,Hydropower Priority,Priority
+855,Minimum Flow Requirement,Demand
+877,Top of Inactive,Inactive Pool
+878,Top of Buffer,Storage Demand
+882,Net Evaporation,Net Evaporation
+884,Tailwater Elevation,Tailwater Elevation
+885,Energy Demand,Energy Demand
+887,Generating Efficiency,Generating Efficiency
+909,Storage Capacity,Storage Capacity
+910,Initial Storage,Initial Storage
+911,Volume Elevation Curve,Volume Elevation Curve
+928,Max. Turbine Flow,Turbine Capacity
+1008,Headflow,Headflow
+1037,Max Turbine Flow,Turbine Capacity
+1040,Generating Efficiency,Generating Efficiency
+1041,Fixed Head,Fixed Head
+1197,Observed Volume,Observed Storage

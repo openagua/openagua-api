@@ -1,0 +1,26 @@
+TypeID,Name,NameNTV,SymbolType,SymbolStyle,LXLinkSrc,LXLinkDest,LRetLinkSrc,LRetLinkDest,LHUCROSrc,LHUCRODest,LReachBoundary,LOnRiver,LOffRiver,LAllowNotActiveInBY
+1,"Demand Site","Demand Site",0,0,True,True,True,False,,,False,False,True,True
+2,"Wastewater Treatment Plant","Wastewater Treatment Plant",0,0,True,False,True,True,,True,False,False,True,True
+3,"Groundwater","Groundwater",0,0,True,False,False,True,True,True,False,False,True,True
+4,"Reservoir","Reservoir",0,0,True,True,False,True,,True,True,True,True,True
+5,"Other Supply","Other Supply",0,0,True,False,False,True,,,False,False,True,True
+6,"River","River",1,0,True,True,False,True,,True,False,False,True,False
+7,"Transmission Link","Transmission Link",1,0,False,False,False,False,,,False,False,False,True
+8,"Return Flow","Return Flow",1,0,False,False,False,False,,,False,False,False,True
+9,"Flow Requirement","Flow Requirement",0,0,False,False,False,True,,True,True,True,False,False
+10,"River Withdrawal","River Withdrawal",0,0,True,False,False,True,,True,True,True,False,False
+11,"Diversion Outflow","Diversion Outflow",0,0,False,False,False,True,,True,True,True,False,False
+12,"Other Surface Inflow","Other Surface Inflow",0,0,False,False,False,True,,True,True,True,False,True
+13,"Tributary Inflow","Tributary Inflow",0,0,False,True,False,True,,True,True,True,False,False
+14,"Run of River Hydro","Run of River Hydro",0,0,False,False,False,True,,True,True,True,False,True
+15,"Diversion","Diversion",1,0,True,True,False,True,,True,False,False,True,True
+16,"River Reach","River Reach",1,0,False,False,False,True,,True,False,True,False,False
+17,"Return Flow Node","Return Flow Node",0,0,False,False,False,True,,True,True,True,False,False
+18,"Storage Node","Storage Node",0,0,False,False,False,False,,,False,False,True,False
+19,"Atmosphere","Atmosphere",0,0,False,False,False,False,,,False,False,True,False
+20,"Streamflow Gauge","Streamflow Gauge",0,0,False,False,False,False,,,False,True,False,False
+21,"Catchment","Catchment",0,0,False,True,False,False,True,True,False,False,True,True
+22,"Runoff/Infiltration","Runoff/Infiltration",1,1,False,False,False,False,,,False,False,False,False
+23,"Catchment Inflow Node","Catchment Inflow Node",0,0,False,False,False,True,,True,True,True,False,False
+24,"Hydropower","Hydropower",0,0,False,False,False,False,,,False,False,True,False
+25,"Buffer Zone","Buffer Zone",0,0,False,False,False,False,,,False,False,True,False

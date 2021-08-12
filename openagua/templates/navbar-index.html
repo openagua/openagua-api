@@ -1,0 +1,34 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand oa-navbar-brand" href="/">
+                <img height="25" width="25" src="{{ url_for('static', filename='svg/logo.svg') }}">
+                <span class="oa-app-name">{{ config["APP_NAME"] }}</span>
+            </a>
+            {#      <span class="language">#}
+            {#        <select id='locale' class="selectpicker" data-width="auto" data-style="btn-success">#}
+            {#        {% for code in languages %}#}
+            {#          {% if code == session['language'] %}#}
+            {#          <option value="{{ code }}" selected="selected">{{ languages[code]}}</option>#}
+            {#          {% else %}#}
+            {#          <option value="{{ code }}">{{ languages[code]}}</option>#}
+            {#          {% endif %}#}
+            {#        {% endfor %}#}
+            {#        </select>#}
+            {#      </span>#}
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-index"
+                    aria-expanded="false" aria-controls="navbar">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-index">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="nav-item"><a class="nav-link" href="http://docs.openagua.org">Docs</a></li>
+                <li class="nav-item"><a class="nav-link" href="http://openagua.wordpress.com">Blog</a></li>
+                {#        {% include 'support-dropdown.html' %}#}
+                <li class="nav-item"><a class="nav-link" href="{{config['OA_AUTH_ORIGIN']}}/register">Create account</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{config['OA_AUTH_ORIGIN']}}/login">Sign in</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>

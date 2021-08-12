@@ -1,0 +1,27 @@
+<!-- In-lining styles to avoid needing a separate .css file -->
+{% extends "layout.html" %}
+{% block apphead %}
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/security.css') }}"/>
+
+{% endblock %}
+
+{% block appbody %}
+
+    {% block menu %}
+    {% endblock %}
+
+    <div id="main-div" class="with-margin">
+
+    {% block main %}
+        <div class="container">
+            <div class="row">
+                <div class="col_form security-form col-xs-12 col-sm-6 col-centered with-margin clearfix">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+{% endblock %}
