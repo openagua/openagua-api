@@ -94,6 +94,7 @@ from openagua.apis import hydra
 from openagua.apis import api0, api_blueprint, ping
 from openagua.apis.security import auth0
 from openagua.admin_openagua import admin_openagua
+
 # from openagua.discover import discover
 
 # register blueprints
@@ -106,17 +107,12 @@ app.register_blueprint(auth0)
 
 # register before requests
 from .request_functions import _load_datauser, _make_connection, make_root_connection
-from .request_processing import before_most_requests, before_api_requests
 from .request_functions import _load_active_study
 
-api0.before_request(before_most_requests)
-api_blueprint.before_request(before_api_requests)
-
 if app.config['INCLUDE_HYDROLOGY']:
-    from openagua.hydrology import hydrology  # a part of network_editor
+    from openagua.hydrology import hydrology
 
     app.register_blueprint(hydrology, url_prefix='/hydrology')
-    app.before_request_funcs.update({'hydrology': []})
 
 create_ee(app)
 
