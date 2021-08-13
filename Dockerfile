@@ -18,7 +18,7 @@ RUN apt-get update \
     && pip3 install $(grep -ivE "winpath" requirements.txt) \
     && pip3 uninstall -y hydra-base \
     && git clone https://github.com/openagua/hydra-base.git \
-    && cd hydra-base && python3 setup.py install && cd .. && rm -r hydra-base \
+    && cd hydra-base && pip3 install . && cd .. && rm -r hydra-base \
     && apt-get purge -y --auto-remove gcc git \
     && apt-get purge -y --auto-remove libffi-dev libpq-dev default-libmysqlclient-dev
 
