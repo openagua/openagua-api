@@ -2,6 +2,16 @@ from flask import g, request, current_app, session
 from openagua.security import current_user
 from openagua.connection import HydraConnection, root_connection
 from openagua.lib.users import get_datauser
+from openagua.lib.studies import load_active_study
+
+
+def _load_active_study():
+    g.dataurl_id = request.args.get('sourceId', type=int) or request.json and request.json.get(
+        'sourceId') or request.form and request.form.get('sourceId', type=int)
+    g.project_id = request.args.get('projectId', type=int) or request.json and request.json.get('projectId')
+    load_active_study(dataurl_id=g.dataurl_id, project_id=g.project_id)
+
+    return
 
 
 def _load_datauser(url=None, user_id=None, source_id=None):

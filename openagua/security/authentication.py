@@ -7,7 +7,7 @@ from flask_login.config import EXEMPT_METHODS
 EXEMPT_ENDPOINTS = {'.doc', '.specs'}
 
 from openagua.models import User
-from openagua.decorator_utilities import _make_connection
+from openagua.request_functions import _make_connection
 from flask_login import current_user
 
 from .decorators import _check_http_auth, _check_api_key_auth, abort
@@ -100,7 +100,7 @@ def api_authentication_required(func):
             return func(*args, **kwargs)
         elif current_app.login_manager._login_disabled:
             return func(*args, **kwargs)
-        elif request.endpoint.replace(request.blueprint, '') in EXEMPT_ENDPOINTS:
+        elif request.blueprint and request.endpoint.replace(request.blueprint, '') in EXEMPT_ENDPOINTS:
             return func(*args, **kwargs)
         elif not current_user.is_authenticated:
             return abort(401)

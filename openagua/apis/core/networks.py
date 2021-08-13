@@ -3,7 +3,7 @@ from os.path import splitext
 
 from flask import current_app, jsonify, g, request, send_file
 from flask_restx import Resource, fields
-from flask_uploads import secure_filename, UploadSet, ARCHIVES, configure_uploads
+# from flask_uploads import UploadSet, ARCHIVES, configure_uploads
 import pendulum
 from attrdict import AttrDict
 
@@ -22,8 +22,8 @@ from openagua import app, socketio
 
 from openagua.apis import api0, api
 
-templates = UploadSet('templates', ARCHIVES, default_dest=lambda app: app.instance_path)
-configure_uploads(app, templates)
+# templates = UploadSet('templates', ARCHIVES, default_dest=lambda app: app.instance_path)
+# configure_uploads(app, templates)
 
 
 @api.route('/networks')
@@ -57,7 +57,8 @@ class Networks(Resource):
             project_id = request.form.get('project_id', type=int)
             network_name = request.form.get('network_name')
             flavor = request.form.get('flavor')
-            filename = secure_filename(file.filename)
+            # filename = secure_filename(file.filename)
+            filename = file.filename
             ext = splitext(file.filename)[-1]
 
             network = None

@@ -4,7 +4,7 @@ from flask import request, g
 
 from openagua.security import login_required
 from openagua.lib.studies import load_active_study
-from openagua.decorator_utilities import _load_datauser, _make_connection
+from openagua.request_functions import _load_datauser, _make_connection
 
 
 def load_study(func):

@@ -1,7 +1,7 @@
 from flask import render_template, send_from_directory, session, request, current_app, jsonify, g
 from openagua.security import login_required, current_user
 from openagua import app
-from openagua.decorators import _load_active_study, _make_connection, _load_datauser
+from openagua.request_functions import _load_active_study, _make_connection, _load_datauser
 import urllib.parse
 import hashlib
 
@@ -14,15 +14,15 @@ KEY_NAMES = {
 }
 
 
-def load_the_basics(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        _load_active_study()
-        _load_datauser()
-        _make_connection()
-        return f(*args, **kwargs)
-
-    return decorated_function
+# def load_the_basics(f):
+#     @wraps(f)
+#     def decorated_function(*args, **kwargs):
+#         _load_active_study()
+#         _load_datauser()
+#         _make_connection()
+#         return f(*args, **kwargs)
+#
+#     return decorated_function
 
 
 def set_active_network_panel(panel_name):
@@ -42,6 +42,7 @@ def node_modules(filename):
 @app.route('/cookies')
 def show_cookies():
     return render_template('cookies.html')
+
 
 @app.route('/')
 def index():

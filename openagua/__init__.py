@@ -105,17 +105,12 @@ app.register_blueprint(admin_openagua, url_prefix='')
 app.register_blueprint(auth0)
 
 # register before requests
-from .decorator_utilities import _load_datauser, _make_connection, make_root_connection
-from .decorators import _load_active_study, _before_most_requests, _before_api_requests
+from .request_functions import _load_datauser, _make_connection, make_root_connection
+from .request_processing import before_most_requests, before_api_requests
+from .request_functions import _load_active_study
 
-app.before_request_funcs = {
-    'api0': [_before_most_requests],
-    'api': [_before_api_requests],
-    # 'discover': [],
-    'project': [make_root_connection],
-    'auth': [],
-    'hydra': []
-}
+api0.before_request(before_most_requests)
+api_blueprint.before_request(before_api_requests)
 
 if app.config['INCLUDE_HYDROLOGY']:
     from openagua.hydrology import hydrology  # a part of network_editor

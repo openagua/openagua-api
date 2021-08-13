@@ -16,7 +16,7 @@ from openagua.lib.network_editor import repair_network_references, update_links2
 from openagua.lib.templates import clean_template, clean_template2, add_template
 from openagua.lib.files import add_storage, upload_network_data, duplicate_folder
 from openagua.utils import change_active_template
-from openagua.decorators import _load_datauser, _make_connection
+from openagua.request_functions import _load_datauser, _make_connection
 
 INVALID_CLASS_CHARACTERS = ['~', '!', '@', '$', '%', '^', '&', '*', '(', ')', '+', '=', ',', '.', '/', '\'', ';', ':',
                             '"', '?', '>', '<', '[', ']', '\\', '{', '}', '|', '`', '#', ' ']
