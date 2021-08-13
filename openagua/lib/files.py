@@ -6,8 +6,6 @@ from botocore.client import Config
 from multiprocessing import Pool
 from threading import Thread
 
-from s3fs.core import S3FileSystem
-
 
 def add_storage(network, location, force=False):
     # should be moved to site-level
@@ -44,18 +42,6 @@ def s3_resource():
     return s3
 
 
-def s3_filesystem():
-    host = os.environ.get('AWS_S3_HOST')
-    port = os.environ.get('AWS_S3_PORT', 9000)
-    if host:
-        client_kwargs = {'endpoint_url': '{}:{}'.format(host, port)}
-        s3 = S3FileSystem(anon=False, client_kwargs=client_kwargs)
-    else:
-        s3 = S3FileSystem(anon=False)
-
-    return s3
-
-
 def s3_bucket(bucket_name, s3=None):
     if s3:
         return s3.Bucket(bucket_name)
@@ -64,11 +50,6 @@ def s3_bucket(bucket_name, s3=None):
 
 
 def object_url(obj):
-    # endpoint_url = '{}/{}/{}'.format(
-    #     obj.meta.client.meta.endpoint_url,
-    #     obj.bucket_name,
-    #     obj.key
-    # )
     endpoint_url = 'https://{}.s3.amazonaws.com/{}'.format(
         obj.bucket_name,
         obj.key

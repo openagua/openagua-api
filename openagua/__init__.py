@@ -136,10 +136,9 @@ os.environ['AWS_ACCESS_KEY_ID'] = app.config['AWS_ACCESS_KEY_ID']
 os.environ['AWS_SECRET_ACCESS_KEY'] = app.config['AWS_SECRET_ACCESS_KEY']
 os.environ['AWS_S3_BUCKET'] = app.config.get('AWS_S3_BUCKET')
 
-from openagua.lib.files import s3_resource, s3_filesystem
+from openagua.lib.files import s3_resource
 
 app.s3 = s3_resource()
-app.s3fs = s3_filesystem()
 
 # PubNub for canceling tasks (can we replace this with Celery?)
 pnconfig = PNConfiguration()
