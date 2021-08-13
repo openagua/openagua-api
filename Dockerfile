@@ -5,7 +5,7 @@
 #RUN npm run build
 
 # PRODUCTION STAGE
-FROM python:3.8-slim-stretch
+FROM python:3.8-slim-buster
 
 # build/install Python libraries
 COPY ./requirements.txt /app/requirements.txt
