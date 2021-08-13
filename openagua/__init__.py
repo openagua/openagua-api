@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, g, session, flash, make_response, jsonify, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_babelex import Babel
 from flask_socketio import SocketIO
@@ -10,7 +10,7 @@ import logging
 
 from config import configs
 from openagua.mail import Mail
-from openagua.security import Security, SQLAlchemyUserDatastore
+from openagua.security import Security, SQLAlchemyUserDatastore, logout_user
 from openagua.lib.messaging import RabbitMQ
 from openagua.lib.earth_engine import create_ee
 from openagua.realtime import init_socketio
@@ -116,9 +116,21 @@ if app.config['INCLUDE_HYDROLOGY']:
 
 create_ee(app)
 
+
 # app.before_first_request - moved to discover
 # if 'MAPBOX_CREATION_TOKEN' in app.config:
 #     os.environ['MAPBOX_ACCESS_TOKEN'] = app.config['MAPBOX_CREATION_TOKEN']
+
+@app.after_request
+def check_data_session(response):
+    if hasattr(g, 'invalid_data_session') or response.status_code == 511:
+        logout_user()
+        session['_flashes'] = []
+        flash("Oops! Your data session appears to be invalid. Please login again.", "danger")
+        return make_response(jsonify(url=url_for('security.logout')), 511)
+
+    return response
+
 
 os.environ['AWS_ACCESS_KEY_ID'] = app.config['AWS_ACCESS_KEY_ID']
 os.environ['AWS_SECRET_ACCESS_KEY'] = app.config['AWS_SECRET_ACCESS_KEY']
