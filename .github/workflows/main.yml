@@ -44,7 +44,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
       - name: Deploy app to server
-        run: ssh $SERVER_USERNAME@SERVER_HOST "docker-compose pull && docker-compose up -d --remove-orphans && docker system prune -a -f"
+        run: ssh $SERVER_USERNAME@$SERVER_HOST "docker-compose pull && docker-compose up -d --remove-orphans && docker system prune -a -f"
         env:
           SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
