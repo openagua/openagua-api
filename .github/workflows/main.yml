@@ -42,14 +42,11 @@ jobs:
         run: |
           which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
           eval $(ssh-agent -s)
-          ssh-add <(echo "$SSH_PRIVATE_KEY")
+          ssh-add <(echo "${{ secrets.SSH_PRIVATE_KEY }}")
           mkdir -p ~/.ssh
-          ssh-keyscan -H '$KNOWN_HOSTS' >> ~/.ssh/known_hosts
-          ssh-keyscan $KNOWN_HOSTS | sort -u - ~/.ssh/known_hosts -o ~/.ssh/known_hosts
+          ssh-keyscan -H '${{ secrets.SSH_KNOWN_HOSTS }}' >> ~/.ssh/known_hosts
+          ssh-keyscan ${{ secrets.SSH_KNOWN_HOSTS }} | sort -u - ~/.ssh/known_hosts -o ~/.ssh/known_hosts
           [[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
       - name: Deploy app to server
 #        run: ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "docker-compose pull && docker-compose up -d --remove-orphans && docker system prune -a -f"
         run: ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "echo hello"
