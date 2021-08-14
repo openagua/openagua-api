@@ -33,24 +33,25 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-#  deploy:
-#    name: Deploy app to server
-#    runs-on: ubuntu-latest
-#    environment: deploy
-#    steps:
-#      - name: Set up SSH
-#        run: |
-#          which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
-#          eval $(ssh-agent -s)
-#          ssh-add <(echo "$SSH_PRIVATE_KEY")
-#          mkdir -p ~/.ssh
-#          ssh-keyscan -H 'github.com' >> ~/.ssh/known_hosts
-#          ssh-keyscan github.com | sort -u - ~/.ssh/known_hosts -o ~/.ssh/known_hosts
-#          [[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-#        env:
-#          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-#      - name: Deploy app to server
-#        uses: actions/checkout@v2
-#        run: ssh root@$OPENAGUA_HOST "docker-compose pull && docker-compose up -d --remove-orphans && docker system prune -a -f"
-#        env:
-#          OPENAGUA_HOST: ${{ secrets.OPENAGUA_HOST }}
+  deploy:
+    name: Deploy app to server
+    runs-on: ubuntu-latest
+    environment: deploy
+    steps:
+      - name: Set up SSH
+        run: |
+          which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
+          eval $(ssh-agent -s)
+          ssh-add <(echo "$SSH_PRIVATE_KEY")
+          mkdir -p ~/.ssh
+          ssh-keyscan -H '$KNOWN_HOSTS' >> ~/.ssh/known_hosts
+          ssh-keyscan $KNOWN_HOSTS | sort -u - ~/.ssh/known_hosts -o ~/.ssh/known_hosts
+          [[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+      - name: Deploy app to server
+        uses: actions/checkout@v2
+        run: ssh root@$OPENAGUA_HOST "docker-compose pull && docker-compose up -d --remove-orphans && docker system prune -a -f"
+        env:
+          OPENAGUA_HOST: ${{ secrets.OPENAGUA_HOST }}
