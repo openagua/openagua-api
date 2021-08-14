@@ -43,7 +43,7 @@ jobs:
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
-      - name: Deploy app to server
-        run: ssh root@$OPENAGUA_HOST "docker-compose pull && docker-compose up -d --remove-orphans && docker system prune -a -f"
-        env:
-          OPENAGUA_HOST: ${{ secrets.OPENAGUA_HOST }}
+#      - name: Deploy app to server
+#        run: ssh root@$OPENAGUA_HOST "docker-compose pull && docker-compose up -d --remove-orphans && docker system prune -a -f"
+#        env:
+#          OPENAGUA_HOST: ${{ secrets.OPENAGUA_HOST }}
