@@ -18,7 +18,7 @@ services:
       - app
 #      - rabbitmq
   app:
-    image: registry.gitlab.com/flowdirections/openagua:latest
+    image: openagua/openagua:main
     container_name: openagua
     ports:
       - 5000:5000
