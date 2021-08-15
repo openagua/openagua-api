@@ -37,6 +37,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
   deploy:
     name: Deploy app to server
+    needs: push_to_registry
     runs-on: ubuntu-latest
     environment: deploy
     steps:
