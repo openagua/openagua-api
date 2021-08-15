@@ -1,6 +1,6 @@
 # see https://zellwk.com/blog/github-actions-deploy/
 
-name: Publish Docker image
+name: Build and deploy app
 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
@@ -8,8 +8,8 @@ on:
     branches: [ main ]
 
 jobs:
-  push_to_registry:
-    name: Push Docker image to Docker Hub
+  build_push_docker:
+    name: Build and deploy Docker image
     runs-on: ubuntu-latest
     environment: build
     steps:
@@ -37,7 +37,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
   deploy:
     name: Deploy app to server
-    needs: push_to_registry
+    needs: build_push_docker
     runs-on: ubuntu-latest
     environment: deploy
     steps:
