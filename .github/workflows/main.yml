@@ -47,6 +47,7 @@ jobs:
           known_hosts: 'placeholder'
       - name: Adding Known Hosts
         run: ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+      - name: Check out the repo
+        uses: actions/checkout@v2
       - name: Deploy app to server
         run: ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "docker-compose pull && docker-compose up -d --remove-orphans && docker system prune -a -f"
-#        run: ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "echo hello"
