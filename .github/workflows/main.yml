@@ -40,9 +40,12 @@ jobs:
     steps:
       - name: Set up SSH
         run: |
+          eval $(ssh-agent -s)
           ssh-add <(echo "${{ secrets.SSH_PRIVATE_KEY }}")
           mkdir -p ~/.ssh
           ssh-keyscan -H 'github.com' >> ~/.ssh/known_hosts
+#          ssh-keyscan github.com | sort -u - ~/.ssh/known_hosts -o ~/.ssh/known_hosts
+#          [[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
       - name: Deploy app to server
 #        run: ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "docker-compose pull && docker-compose up -d --remove-orphans && docker system prune -a -f"
         run: ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} "echo hello"
