@@ -115,6 +115,17 @@ def register():
         return 'Are you a robot?', 409
 
 
+@auth0.route('/validate_email', methods=['GET'])
+@anonymous_user_required
+def validate_email():
+    email = request.args.get('email', '')
+    user = User.query.filter_by(email=email).first()
+    if user:
+        return '', 200
+    else:
+        return '', 404
+
+
 # reference: https://dev.to/paurakhsharma/series/3672
 @auth0.route('/login', methods=['POST'])
 @anonymous_user_required
