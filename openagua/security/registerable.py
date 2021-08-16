@@ -32,7 +32,7 @@ def register_user(**kwargs):
 
     if _security.confirmable:
         confirmation_link, token = generate_confirmation_link(user, origin=origin)
-        do_flash(*get_message('CONFIRM_REGISTRATION', email=user.email))
+        # do_flash(*get_message('CONFIRM_REGISTRATION', email=user.email))
 
     user_registered.send(app._get_current_object(),
                          user=user, confirm_token=token)

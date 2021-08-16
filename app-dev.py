@@ -1,7 +1,3 @@
-from gevent import monkey
-
-monkey.patch_all()
-
 import os
 
 from openagua import socketio, app

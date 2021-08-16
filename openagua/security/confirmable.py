@@ -10,6 +10,8 @@
     :license: MIT, see LICENSE for more details.
 """
 
+from urllib.parse import urlparse
+
 from flask import current_app as app, url_for
 from werkzeug.local import LocalProxy
 
@@ -26,6 +28,8 @@ _datastore = LocalProxy(lambda: _security.datastore)
 def generate_confirmation_link(user, origin=None):
     token = generate_confirmation_token(user)
     if origin:
+        parsed_origin = urlparse(origin)
+        origin = '{}/{}/confirm'.format(parsed_origin.scheme, parsed_origin.netloc)
         url = '{}?token={}'.format(origin, token)
     else:
         url = url_for_security('confirm_email', token=token, _external=True)
