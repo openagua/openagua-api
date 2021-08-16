@@ -212,9 +212,9 @@ def send_confirmation():
 
     if form.validate_on_submit():
         send_confirmation_instructions(form.user)
-        if not request.is_json:
-            do_flash(*get_message('CONFIRMATION_REQUEST',
-                                  email=form.user.email))
+        # if not request.is_json:
+        #     do_flash(*get_message('CONFIRMATION_REQUEST',
+        #                           email=form.user.email))
 
     if request.is_json:
         return _render_json(form)
@@ -233,14 +233,14 @@ def confirm_email(token):
 
     if not user or invalid:
         invalid = True
-        do_flash(*get_message('INVALID_CONFIRMATION_TOKEN'))
+        # do_flash(*get_message('INVALID_CONFIRMATION_TOKEN'))
 
     already_confirmed = user is not None and user.confirmed_at is not None
 
     if expired and not already_confirmed:
         send_confirmation_instructions(user)
-        do_flash(*get_message('CONFIRMATION_EXPIRED', email=user.email,
-                              within=_security.confirm_email_within))
+        # do_flash(*get_message('CONFIRMATION_EXPIRED', email=user.email,
+        #                       within=_security.confirm_email_within))
     if invalid or (expired and not already_confirmed):
         return redirect(get_url(_security.confirm_error_view) or
                         url_for('send_confirmation'))
@@ -255,7 +255,7 @@ def confirm_email(token):
     else:
         msg = 'ALREADY_CONFIRMED'
 
-    do_flash(*get_message(msg))
+    # do_flash(*get_message(msg))
 
     return redirect(get_url(_security.post_confirm_view) or
                     get_url(_security.post_login_view))
