@@ -29,6 +29,7 @@ venv/
 
 .yarn-cache.tgz
 .env
+*.cfg
 hydra.ini
 
 .vscode

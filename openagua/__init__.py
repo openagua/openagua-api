@@ -49,7 +49,7 @@ app.config.from_object(configs[install_type])
 app.config['SECRET_ENCRYPT_KEY'] = app.config['SECRET_ENCRYPT_KEY'].encode()
 
 # set up instance configuration
-instance_cfg = 'instance_config.py'
+instance_cfg = 'config.cfg'
 if os.path.exists(os.path.join(app.instance_path, instance_cfg)):
     app.config.from_pyfile(instance_cfg)
 
