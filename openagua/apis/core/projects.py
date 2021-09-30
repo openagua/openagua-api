@@ -123,6 +123,18 @@ class Project(Resource):
 
 @api.route('/projects/<int:project_id>/notes')
 class ProjectNotes(Resource):
+    @api.doc(description='Get notes from a project.')
+    @api.response(200, 'Success')
+    def get(self, project_id):
+        notes = g.conn.call('get_notes', 'PROJECT', project_id)
+        for note in notes:
+            note.pop('project', None)
+            if type(note['value']) == bytes:
+                note['value'] = note['value'].decode()
+        return jsonify(notes=notes)
+
+    @api.doc(description='Add a note to a project.')
+    @api.response(200, 'Success')
     def post(self, project_id):
         note = request.json
         note = g.conn.call('add_project_note', project_id, note=note)
@@ -133,7 +145,7 @@ class ProjectNotes(Resource):
 class ProjectNote(Resource):
     def put(self, project_id, note_id):
         note = request.json
-        g.conn.call('update_note', note=note)
+        g.conn.call('update_note', note)
         return '', 204
 
 
@@ -192,19 +204,6 @@ class ProjectsStars(Resource):
     def get(self):
         stars = get_stars(user_id=current_user.id)
         return jsonify(stars=stars)
-
-
-@api.route('/projects/<int:project_id>/notes')
-class ProjectNotes(Resource):
-    @api.doc(description='Get notes from a project.')
-    @api.response(200, 'Success')
-    def get(self, project_id):
-        notes = g.conn.call('get_notes', 'PROJECT', project_id)
-        for note in notes:
-            note.pop('project', None)
-            if type(note['value']) == bytes:
-                note['value'] = note['value'].decode()
-        return jsonify(notes=notes)
 
 # @api.route('/hydroshare/import')
 # @login_required
