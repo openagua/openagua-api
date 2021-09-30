@@ -129,7 +129,7 @@ class ProjectNotes(Resource):
         notes = g.conn.call('get_notes', 'PROJECT', project_id)
         for note in notes:
             note.pop('project', None)
-            if type(note['value']) == bytes:
+            if isinstance(note['value'], bytes):
                 note['value'] = note['value'].decode()
         return jsonify(notes=notes)
 
@@ -137,7 +137,11 @@ class ProjectNotes(Resource):
     @api.response(200, 'Success')
     def post(self, project_id):
         note = request.json
-        note = g.conn.call('add_project_note', project_id, note=note)
+        note['value'] = note['value'].encode()
+        note['ref_key'] = 'PROJECT'
+        note['ref_id'] = project_id
+        note = g.conn.call('add_note', note)
+        note['value'] = note.get('value').decode()
         return jsonify(note=note)
 
 
@@ -145,8 +149,12 @@ class ProjectNotes(Resource):
 class ProjectNote(Resource):
     def put(self, project_id, note_id):
         note = request.json
-        g.conn.call('update_note', note)
-        return '', 204
+        note['value'] = note.get('value', '').encode()
+        note['ref_key'] = 'PROJECT'
+        note['ref_id'] = project_id
+        note = g.conn.call('update_note', note)
+        note['value'] = note.get('value', b'').decode()
+        return jsonify(note=note)
 
 
 @api.route('/projects/<int:project_id>/permissions')
