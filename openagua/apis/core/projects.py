@@ -147,6 +147,8 @@ class ProjectNotes(Resource):
 
 @api.route('/projects/<int:project_id>/notes/<int:note_id>')
 class ProjectNote(Resource):
+    @api.doc(description='Update a project note.')
+    @api.response(200, 'Success')
     def put(self, project_id, note_id):
         note = request.json
         note['value'] = note.get('value', '').encode()
@@ -170,6 +172,7 @@ class ProjectPermissions(Resource):
         return jsonify(results)
 
     @api.doc(description="Update project permissions.")
+    @api.response(204, 'Success')
     def put(self, project_id):
         permissions = request.json['permissions']
 
