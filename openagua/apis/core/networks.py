@@ -1,7 +1,7 @@
 import json
 from os.path import splitext
 
-from flask import current_app, jsonify, g, request, send_file
+from flask import current_app, jsonify, g, request, send_file, make_response
 from flask_restx import Resource, fields
 # from flask_uploads import UploadSet, ARCHIVES, configure_uploads
 import pendulum
@@ -130,6 +130,9 @@ class Network(Resource):
                               include_data=False)
         if network is None:
             return '', 511
+
+        elif 'error' in network:
+            return make_response(jsonify(network), 403)
 
         baseline = [s for s in network.scenarios if s.layout.get('class') == 'baseline']
         update_baseline = False
