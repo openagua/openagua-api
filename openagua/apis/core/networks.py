@@ -194,9 +194,6 @@ class Network(Resource):
             repair_network(g.conn, g.source_id, network=network, options=options)
             return '', 204
 
-        user_network_settings = get_network_settings(current_user.id, g.dataurl_id, network_id)
-        network['user_settings'] = user_network_settings
-
         return jsonify(network=network)
 
     @api.doc(description='Patch a network')
