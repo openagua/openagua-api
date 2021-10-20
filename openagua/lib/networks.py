@@ -1407,7 +1407,7 @@ def add_update_network_settings(user_id, source_id, network_id, settings):
     else:
         updated_settings = network_settings.settings
         updated_settings.update(settings)
-        network_settings.settings = updated_settings.copy()
+        network_settings.settings = copy.deepcopy(updated_settings)
         db.session.commit()
 
 
