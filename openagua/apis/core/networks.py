@@ -10,7 +10,7 @@ from attrdict import AttrDict
 from openagua.security import login_required, current_user
 from openagua.lib.networks import repair_network, update_network_on_mapbox, update_types, get_network_for_export, \
     make_network_thumbnail, save_network_preview, clone_network, move_network, import_from_json, \
-    get_network_settings, add_update_network_settings
+    get_network_settings, add_update_network_settings, delete_network_settings
 from openagua.lib.sharing import set_resource_permissions, share_resource
 from openagua.lib.templates import get_default_types
 from openagua.lib.files import delete_all_network_files
@@ -233,9 +233,11 @@ class Network(Resource):
                               summary=True)
         # note that purge_data is required, but not used in the Hydra function
         resp = g.conn.call('delete_network', network_id, True)
+
         if resp == 'OK':
             bucket_name = current_app.config['AWS_S3_BUCKET']
             delete_all_network_files(network, bucket_name, s3=current_app.s3)
+            delete_network_settings(current_user.id, g.dataurl_id, network_id)
             return '', 204
         else:
             return '', 500
@@ -736,16 +738,6 @@ class ResourceGroup(Resource):
         group = request.json.get('group')
         rg = g.conn.call('update_resourcegroup', group=group)
         return jsonify(group=rg)
-
-
-# @api0.route('/network/user_settings', methods=['PUT'])
-# @login_required
-# def _update_user_network_settings():
-#     network_id = request.json['network_id']
-#     settings = request.json['data']
-#     update_user_network_settings(datauser_id=g.datauser.id, network_id=network_id, settings=settings)
-#
-#     return '', 204
 
 
 @api.route('/resource_attributes')

@@ -18,6 +18,7 @@ from openagua.lib.files import add_storage, upload_network_data, duplicate_folde
 from openagua.utils import change_active_template
 from openagua.request_functions import _load_datauser, _make_connection
 
+from openagua import db
 from openagua.models import UserNetworkSettings
 
 INVALID_CLASS_CHARACTERS = ['~', '!', '@', '$', '%', '^', '&', '*', '(', ')', '+', '=', ',', '.', '/', '\'', ';', ':',
@@ -1397,5 +1398,15 @@ def add_update_network_settings(user_id, source_id, network_id, settings):
     if not network_settings:
         network_settings = UserNetworkSettings()
         network_settings.settings = settings
+        db.session.add(network_settings)
+        db.session.commit()
     else:
         network_settings.settings.update(settings)
+        db.session.commit()
+
+
+def delete_network_settings(user_id, source_id, network_id):
+    network_settings = get_network_settings(user_id, source_id, network_id)
+    if network_settings:
+        db.delete(network_settings)
+        db.session.commit()
