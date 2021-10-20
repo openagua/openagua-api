@@ -326,6 +326,25 @@ class NetworkModel(db.Model):
         return AttrDict(ret)
 
 
+class UserNetworkSettings(db.Model):
+    """Models available for a study/network"""
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id', ondelete='CASCADE'))
+    dataurl_id = db.Column('dataurl_id', db.Integer(), db.ForeignKey('dataurl.id', ondelete='CASCADE'),
+                           primary_key=True)
+    network_id = db.Column('network_id', db.Integer(), primary_key=True)
+    settings = db.Column(db.JSON())  # settings for the network
+
+    db.UniqueConstraint('user_id', 'dataurl_id', 'network_id')
+
+    def get(self, setting):
+        settings = self.settings or {}
+        return settings.get(setting)
+
+    def to_json(self):
+        ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return AttrDict(ret)
+
+
 class ModelTemplate(db.Model):
     """Dependancy relationships between models and templates."""
     model_id = db.Column(db.Integer(), db.ForeignKey('model.id', ondelete='CASCADE'), primary_key=True)

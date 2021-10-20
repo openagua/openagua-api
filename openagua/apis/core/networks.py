@@ -7,9 +7,10 @@ from flask_restx import Resource, fields
 import pendulum
 from attrdict import AttrDict
 
-from openagua.security import login_required
+from openagua.security import login_required, current_user
 from openagua.lib.networks import repair_network, update_network_on_mapbox, update_types, get_network_for_export, \
-    make_network_thumbnail, save_network_preview, clone_network, move_network, import_from_json
+    make_network_thumbnail, save_network_preview, clone_network, move_network, import_from_json, \
+    get_network_settings, add_update_network_settings
 from openagua.lib.sharing import set_resource_permissions, share_resource
 from openagua.lib.templates import get_default_types
 from openagua.lib.files import delete_all_network_files
@@ -21,6 +22,7 @@ from openagua.lib.addins.weap_import import import_from_weap
 from openagua import app, socketio
 
 from openagua.apis import api0, api
+
 
 # templates = UploadSet('templates', ARCHIVES, default_dest=lambda app: app.instance_path)
 # configure_uploads(app, templates)
@@ -192,6 +194,9 @@ class Network(Resource):
             repair_network(g.conn, g.source_id, network=network, options=options)
             return '', 204
 
+        user_network_settings = get_network_settings(current_user.id, g.dataurl_id, network_id)
+        network['user_settings'] = user_network_settings
+
         return jsonify(network=network)
 
     @api.doc(description='Patch a network')
@@ -234,6 +239,26 @@ class Network(Resource):
             return '', 204
         else:
             return '', 500
+
+
+@api.route('/networks/<int:network_id>/settings')
+class NetworkSettings(Resource):
+    @api.doc(description='Get a network''s settings')
+    def get(self, network_id):
+        settings = get_network_settings(current_user.id, g.dataurl_id, network_id)
+        return jsonify(settings)
+
+    @api.doc(description='Add a network''s settings')
+    def post(self, network_id):
+        settings = request.json
+        add_update_network_settings(current_user.id, g.dataurl_id, network_id, settings)
+        return '', 204
+
+    @api.doc(description='Update a network''s settings')
+    def put(self, network_id):
+        settings = request.json
+        add_update_network_settings(current_user.id, g.dataurl_id, network_id, settings)
+        return '', 204
 
 
 @api.route('/networks/<int:network_id>/download')
