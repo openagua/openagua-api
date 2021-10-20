@@ -7,6 +7,9 @@ import datetime
 from hashlib import sha256
 from attrdict import AttrDict
 import json
+
+from sqlalchemy_json import mutable_json_type
+
 from openagua import db
 from openagua.security.utils import hash_password, verify_password
 from openagua.lib.security import generate_random_alphanumeric_key, hash_key
@@ -332,7 +335,7 @@ class UserNetworkSettings(db.Model):
     dataurl_id = db.Column('dataurl_id', db.Integer(), db.ForeignKey('dataurl.id', ondelete='CASCADE'),
                            primary_key=True)
     network_id = db.Column('network_id', db.Integer(), primary_key=True)
-    settings = db.Column(db.JSON())  # settings for the network
+    settings = db.Column(mutable_json_type(dbtype=db.JSON(), nested=True))  # settings for the network
 
     db.UniqueConstraint('user_id', 'dataurl_id', 'network_id')
 
