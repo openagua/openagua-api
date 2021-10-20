@@ -1387,16 +1387,20 @@ def make_node_gj(x, y, node_name=None, node_description=None, ttype=None):
 
 
 def get_network_settings(user_id, source_id, network_id):
-    network_settings = UserNetworkSettings.query.filter_by(user_id=user_id, dataurl_id=source_id,
-                                                           network_id=network_id).first()
-    return network_settings or {}
+    network_settings = UserNetworkSettings.query.filter_by(
+        user_id=user_id, dataurl_id=source_id, network_id=network_id).first()
+    return network_settings.settings or {}
 
 
 def add_update_network_settings(user_id, source_id, network_id, settings):
-    network_settings = UserNetworkSettings.query.filter_by(user_id=user_id, dataurl_id=source_id,
-                                                           network_id=network_id).first()
+    network_settings = UserNetworkSettings.query.filter_by(
+        user_id=user_id, dataurl_id=source_id, network_id=network_id).first()
+
     if not network_settings:
         network_settings = UserNetworkSettings()
+        network_settings.user_id = user_id
+        network_settings.dataurl_id = source_id
+        network_settings.network_id = network_id
         network_settings.settings = settings
         db.session.add(network_settings)
         db.session.commit()
