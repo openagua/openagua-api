@@ -18,6 +18,8 @@ from openagua.lib.files import add_storage, upload_network_data, duplicate_folde
 from openagua.utils import change_active_template
 from openagua.request_functions import _load_datauser, _make_connection
 
+from openagua.models import UserNetworkSettings
+
 INVALID_CLASS_CHARACTERS = ['~', '!', '@', '$', '%', '^', '&', '*', '(', ')', '+', '=', ',', '.', '/', '\'', ';', ':',
                             '"', '?', '>', '<', '[', ']', '\\', '{', '}', '|', '`', '#', ' ']
 
@@ -1381,3 +1383,19 @@ def make_node_gj(x, y, node_name=None, node_description=None, ttype=None):
     gj['properties'] = properties
 
     return gj
+
+
+def get_network_settings(user_id, source_id, network_id):
+    network_settings = UserNetworkSettings.query.filter_by(user_id=user_id, dataurl_id=source_id,
+                                                           network_id=network_id).first()
+    return network_settings or {}
+
+
+def add_update_network_settings(user_id, source_id, network_id, settings):
+    network_settings = UserNetworkSettings.query.filter_by(user_id=user_id, dataurl_id=source_id,
+                                                           network_id=network_id).first()
+    if not network_settings:
+        network_settings = UserNetworkSettings()
+        network_settings.settings = settings
+    else:
+        network_settings.settings.update(settings)
