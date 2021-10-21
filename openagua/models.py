@@ -339,6 +339,12 @@ class UserNetworkSettings(db.Model):
 
     db.UniqueConstraint('user_id', 'dataurl_id', 'network_id')
 
+    def __init__(self, **kwargs):
+        self.user_id = kwargs.get('user_id')
+        self.dataurl_id = kwargs.get('dataurl_id')
+        self.network_id = kwargs.get('network_id')
+        self.settings = kwargs.get('settings', {})
+
     def get(self, setting):
         settings = self.settings or {}
         return settings.get(setting)
