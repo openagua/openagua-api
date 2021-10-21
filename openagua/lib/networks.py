@@ -1389,7 +1389,7 @@ def make_node_gj(x, y, node_name=None, node_description=None, ttype=None):
 def get_network_settings(user_id, source_id, network_id):
     network_settings = UserNetworkSettings.query.filter_by(
         user_id=user_id, dataurl_id=source_id, network_id=network_id).first()
-    return network_settings.settings or {}
+    return network_settings and network_settings.settings or {}
 
 
 def add_update_network_settings(user_id, source_id, network_id, settings):
