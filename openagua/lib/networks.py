@@ -345,7 +345,9 @@ def repair_network(conn, source_id, network_id=None, network=None, options=None)
         network['links'] = [repair_resource(l, 'link') for l in network['links']]
 
     # repair missing baseline scenario
+    repair_scenarios = False
     if 'scenarios' in options:
+        repair_scenarios = True
         baseline = [s for s in network.scenarios if s.layout.get('class') == 'baseline']
         if not baseline:
             if network.scenarios:
@@ -396,6 +398,10 @@ def repair_network(conn, source_id, network_id=None, network=None, options=None)
     if not update_resources:
         network.pop('nodes')
         network.pop('links')
+        network.pop('attributes')
+    if not repair_scenarios:
+        network.pop('scenarios')
+
     repaired = conn.call('update_network', network)
 
     return repaired
