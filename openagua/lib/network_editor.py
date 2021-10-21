@@ -1051,7 +1051,11 @@ def repair_network_references(network, update_url=True):
     ref_ids = []
     actual_refs = []
     for ref in network.layout.get('refs', []):
-        path = ref.get('path')
+        url = ref.get('url')
+        if url:
+            path = '/'.join(url.split('/')[4:])
+        else:
+            path = ref.get('path')
         if path and path not in refs and path[:7] == '.layers':
             refs[path] = ref
             ref_ids = int(ref['id'])
@@ -1082,7 +1086,8 @@ def repair_network_references(network, update_url=True):
                 refs.pop(path, None)
                 continue
 
-            new_id = max(ref_ids) + cnt
+            new_id = max(ref_ids) + cnt if ref_ids else cnt
+            ref_ids.append(new_id)
 
             ref = {
                 'id': new_id,
