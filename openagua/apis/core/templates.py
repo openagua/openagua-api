@@ -200,3 +200,12 @@ class Dimensions(Resource):
         full = request.args.get('full', True, type=bool)
         dimensions = g.conn.call('get_dimensions', full=full)
         return jsonify(dimensions=dimensions)
+
+
+@api.route('/units/<int:unit_id>')
+class Units(Resource):
+
+    @api.doc(description='Get a specified unit')
+    def get(self, unit_id):
+        unit = g.conn.call('get_unit', unit_id)
+        return jsonify(unit)
