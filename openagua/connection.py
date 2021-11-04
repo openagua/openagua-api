@@ -136,8 +136,9 @@ class HydraConnection(object):
         )
 
         for attr_data in result:
-            if 'function' in attr_data['dataset']['metadata']:
-                attr_data['dataset']['metadata']['function'] = str(attr_data['dataset']['metadata']['function'])
+            if 'metadata' in attr_data['dataset']:
+                if 'function' in attr_data['dataset']['metadata']:
+                    attr_data['dataset']['metadata']['function'] = str(attr_data['dataset']['metadata']['function'])
 
         return result
 
