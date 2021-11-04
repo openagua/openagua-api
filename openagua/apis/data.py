@@ -77,7 +77,7 @@ class ResourceScenarioData(Resource):
         data_type = data.get('data_type', 'timeseries')
         scenario_data = data['scenario_data']
         attr_id = data['attr_id']
-        res_attr_id = data['res_attr_id']
+        res_attr_id = data.get('res_attr_id')
         unit_id = data.pop('unit_id', None)
         variation = data.pop('variation', None)
         time_settings = data.pop('settings', None)
