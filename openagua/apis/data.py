@@ -98,6 +98,8 @@ class ResourceScenarioData(Resource):
         user_email = current_user.email
         dataset = prepare_dataset(scenario_data, unit_id, attr, data_type, user_id, user_email)
 
+        res_attr = None
+
         # SAVE DATA
         if action == 'save':
             # TODO: In the future the dataset should be created in the client machine, and this can be just a pass-through,
@@ -185,7 +187,7 @@ class ResourceScenarioData(Resource):
             'eval_value': eval_value
         }
 
-        return jsonify(result=result, variation=variation)
+        return jsonify(result=result, res_attr=res_attr, variation=variation)
 
 
 @api.route('/pivot_input')
