@@ -97,7 +97,6 @@ class ResourceScenarioData(Resource):
         user_id = g.datauser.id
         user_email = current_user.email
         dataset = prepare_dataset(scenario_data, unit_id, attr, data_type, user_id, user_email)
-
         res_attr = None
 
         # SAVE DATA
@@ -113,7 +112,6 @@ class ResourceScenarioData(Resource):
                     resource_type.upper(),
                     resource_id,
                     attr_id,
-                    attr_is_var
                 )
                 res_attr_id = res_attr['id']
 
