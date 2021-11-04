@@ -21,7 +21,7 @@ class Templates(Resource):
         }
     )
     def get(self):
-        project_id = request.args.get('project_id', None, type=int)
+        project_id = request.args.get('project_id', 0, type=int)
         template_ids = request.args.getlist('template_ids[]', type=int)
         load_all = request.args.get('load_all', 'true') == 'true'
         templates = []

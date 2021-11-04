@@ -74,9 +74,12 @@ class ResourceScenarioData(Resource):
     def post(self):
         data = request.json
         action = data['action']
+        resource_type = data['resource_type']
+        resource_id = data['resource_id']
         data_type = data.get('data_type', 'timeseries')
         scenario_data = data['scenario_data']
         attr_id = data['attr_id']
+        attr_is_var = data.get('attr_is_var')
         res_attr_id = data.get('res_attr_id')
         unit_id = data.pop('unit_id', None)
         variation = data.pop('variation', None)
@@ -99,6 +102,18 @@ class ResourceScenarioData(Resource):
         if action == 'save':
             # TODO: In the future the dataset should be created in the client machine, and this can be just a pass-through,
             # so no need for an extra save_data function
+
+            # add resource attribute if it doesn't exist
+            if not res_attr_id:
+                # def add_resource_attribute(resource_type, resource_id, attr_id, is_var, error_on_duplicate=True, **kwargs):
+                res_attr = g.conn.call(
+                    'add_resource_attribute',
+                    resource_type.upper(),
+                    resource_id,
+                    attr_id,
+                    attr_is_var
+                )
+                res_attr_id = res_attr['id']
 
             if variation:
                 scenario = g.conn.call('get_scenario', scenario_id)

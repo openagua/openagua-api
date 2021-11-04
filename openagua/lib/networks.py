@@ -275,15 +275,28 @@ def repair_network(conn, source_id, network_id=None, network=None, options=None)
                 resource['attributes'] = resource.get('attributes', [])
 
                 # repair resource types - add missing attributes
+                updated_resource_types = []
                 for rt in resource['types']:
                     if rt.template_id != template.id:
                         continue
+
                     tt = ttypes[rt.id]
+                    rt['id'] = tt.id
+                    updated_resource_types.append(rt)
                     rattrs = set([ra.attr_id for ra in resource['attributes']])
                     tattrs = set([ta.attr_id for ta in tt['typeattrs']])
                     missing_attrs = tattrs - rattrs
-                    new_attrs = [{'attr_id': ta.attr_id} for ta in tt.typeattrs if ta.attr_id in missing_attrs]
+                    new_attrs = []
+                    for ta in tt.typeattrs:
+                        if ta.attr_id in missing_attrs:
+                            new_attrs.append({
+                                'ref_key': resource_type.upper(),
+                                'attr_id': ta.attr_id,
+                                'attr_is_var': ta.attr_is_var
+                            })
                     resource['attributes'].extend(new_attrs)
+
+                resource['types'] = updated_resource_types
 
             # repair geojson
             if 'topology' in options:
