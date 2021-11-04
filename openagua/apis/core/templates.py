@@ -207,5 +207,10 @@ class Units(Resource):
 
     @api.doc(description='Get a specified unit')
     def get(self, unit_id):
+        include_dimension = request.args.get('include_dimension', True)
         unit = g.conn.call('get_unit', unit_id)
+        if include_dimension:
+            dimension = g.conn.call('get_dimension', unit['dimension_id'])
+            dimension.pop('units', None)
+            unit['dimension'] = dimension
         return jsonify(unit)
