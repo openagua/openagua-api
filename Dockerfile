@@ -24,10 +24,7 @@ RUN apt-get update \
     && apt-get purge -y --auto-remove gcc git \
     && apt-get purge -y --auto-remove libffi-dev libpq-dev default-libmysqlclient-dev
 
-# copy app
 COPY . /app
-#COPY ./openagua/static/dist ./openagua/static/dist
-#COPY ./openagua/templates/dist ./openagua/templates/dist
 
 EXPOSE 5000
 
