@@ -21,7 +21,7 @@ class Templates(Resource):
         }
     )
     def get(self):
-        project_id = request.args.get('project_id', None, type=int)
+        project_id = request.args.get('project_id', 0, type=int)
         template_ids = request.args.getlist('template_ids[]', type=int)
         load_all = request.args.get('load_all', 'true') == 'true'
         templates = []
@@ -207,5 +207,10 @@ class Units(Resource):
 
     @api.doc(description='Get a specified unit')
     def get(self, unit_id):
+        include_dimension = request.args.get('include_dimension', True)
         unit = g.conn.call('get_unit', unit_id)
+        if include_dimension:
+            dimension = g.conn.call('get_dimension', unit['dimension_id'])
+            dimension.pop('units', None)
+            unit['dimension'] = dimension
         return jsonify(unit)
