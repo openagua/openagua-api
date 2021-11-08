@@ -8,8 +8,6 @@ See the full OpenAgua documentation at [http://docs.openagua.org](http://docs.op
 
 These setup instructions are general, for both Windows and Linux. This is untested on OSX, but presumably setup should be similar to that for Linux.
 
-OpenAgua connects to Hydra Platform. So, Hydra Platform needs to be available, either locally or remotely. This assumes Hydra Platform will be run locally. In this case, the first step is to make sure Hydra Platform is running, after which OpenAgua may be run.
-
 **IMPORTANT**: For the time being, even a local setup requires an internet connection, to load externally-hosted JavaScript libraries. This will change in the future.
 
 ## Hydra Platform
