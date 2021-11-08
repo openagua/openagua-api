@@ -30,8 +30,10 @@ class Templates(Resource):
         if project_id or template_ids:
             if project_id:
                 templates = g.conn.call('get_templates', load_all=load_all, project_id=project_id)
-                print(templates) # debug
-                project_template_ids = [t.id for t in templates]
+                try:
+                    project_template_ids = [t.id for t in templates]
+                except:
+                    print(templates)
             if template_ids:
                 template_ids = [tid for tid in template_ids if tid not in project_template_ids]
                 other_templates = g.conn.call('get_templates', template_ids=template_ids)

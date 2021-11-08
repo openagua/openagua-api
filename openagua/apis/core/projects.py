@@ -128,7 +128,10 @@ class ProjectNotes(Resource):
     def get(self, project_id):
         notes = g.conn.call('get_notes', 'PROJECT', project_id)
         for note in notes:
-            note.pop('project', None)
+            try:
+                note.pop('project', None)
+            except:
+                print(notes)
             if isinstance(note['value'], bytes):
                 note['value'] = note['value'].decode()
         return jsonify(notes=notes)
