@@ -45,11 +45,11 @@ class Templates(Resource):
 
             for template in templates:
                 try:
-                    template.layout
+                    template['layout']
                 except:
                     print('Something went wrong processing template: ')
                     print(template)
-                if template.layout.get('project_id'):
+                if template['layout'].get('project_id'):
                     template['project_id'] = template.layout.project_id
                     del template['layout']['project_id']
                     g.conn.call('update_template', template, update_types=False)
