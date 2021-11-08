@@ -44,6 +44,11 @@ class Templates(Resource):
                     print(templates)
 
             for template in templates:
+                try:
+                    template.layout
+                except:
+                    print('Something went wrong processing template: ')
+                    print(template)
                 if template.layout.get('project_id'):
                     template['project_id'] = template.layout.project_id
                     del template['layout']['project_id']
