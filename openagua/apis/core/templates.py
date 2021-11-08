@@ -37,7 +37,11 @@ class Templates(Resource):
             if template_ids:
                 template_ids = [tid for tid in template_ids if tid not in project_template_ids]
                 other_templates = g.conn.call('get_templates', template_ids=template_ids)
-                templates.extend(other_templates)
+                try:
+                    templates.extend(other_templates)
+                except:
+                    print('Something went wrong processing templates: ')
+                    print(templates)
 
             for template in templates:
                 if template.layout.get('project_id'):

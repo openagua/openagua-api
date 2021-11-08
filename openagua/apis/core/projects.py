@@ -132,8 +132,12 @@ class ProjectNotes(Resource):
                 note.pop('project', None)
             except:
                 print(notes)
-            if isinstance(note['value'], bytes):
-                note['value'] = note['value'].decode()
+            try:
+                if isinstance(note['value'], bytes):
+                    note['value'] = note['value'].decode()
+            except:
+                print('Something went wrong processing note: ')
+                print(note)
         return jsonify(notes=notes)
 
     @api.doc(description='Add a note to a project.')
