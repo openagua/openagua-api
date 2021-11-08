@@ -413,7 +413,7 @@ class Evaluator:
 
             if data_type in ['timeseries', 'periodic timeseries']:
                 if type(values) == list:
-                    if flavor is 'json':
+                    if flavor == 'json':
                         result = pandas.DataFrame(data=values, index=self.dates_as_string).to_json(date_format='iso')
                     elif flavor == 'native':
                         result = pandas.DataFrame(data=values, index=self.dates_as_string).to_dict()
@@ -444,7 +444,7 @@ class Evaluator:
                         #     values = {0: values}
                         # elif type(first_col) == dict and not has_blocks:
                         #     values = first_col
-                        if flavor is 'json':
+                        if flavor == 'json':
                             result = pandas.DataFrame(data=values).to_json()
                         elif flavor == 'native':
                             result = values
