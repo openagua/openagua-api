@@ -75,7 +75,10 @@ def get_favorites(dataurl_id=None, project_id=None, study_id=None, network_id=No
 def validate_favorites(conn=None, network_id=None, favorites=()):
     # Check if favorite is still valid
     network = conn.call('get_network', network_id, summary=False, include_data=False, include_resources=False)
-    scenario_ids = set([s.id for s in network['scenarios']])
+    try:
+        scenario_ids = set([s.id for s in network['scenarios']])
+    except:
+        print(network)
     ret = []
     for favorite in favorites:
         if favorite['filters'].get('results'):
