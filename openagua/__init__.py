@@ -57,7 +57,13 @@ app.config.SWAGGER_SUPPORTED_SUBMIT_METHODS = ['get']
 
 # INITIALIZE EXTENSIONS
 
-db = SQLAlchemy(app)
+engine_options = dict(
+    pool_size=50,
+    pool_recycle=300,
+    max_overflow=25
+)
+
+db = SQLAlchemy(app, engine_options=engine_options)
 mail = Mail(app)
 babel = Babel(app)
 
