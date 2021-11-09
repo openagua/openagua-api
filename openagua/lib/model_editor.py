@@ -1,6 +1,5 @@
 from flask import current_app
 from openagua import db
-from openagua.security import current_user
 from openagua.lib.studies import get_study
 from openagua.models import Model, NetworkModel, ModelTemplate, DataUrl
 
