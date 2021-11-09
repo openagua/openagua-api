@@ -1,5 +1,4 @@
 import json
-import io
 from openagua.lib.studies import get_study
 from openagua.models import Favorite
 from openagua import db
@@ -19,6 +18,8 @@ def add_favorite(study_id, name, description, thumbnail, filters, setup, content
 
     db.session.add(favorite)
     db.session.commit()
+
+    db.session.close()
 
     return favorite.id
 
@@ -56,6 +57,7 @@ def get_favorite(favorite_id=None):
         favorite = Favorite.query.filter_by(id=favorite_id).first()
     else:
         favorite = None
+
     return favorite
 
 
