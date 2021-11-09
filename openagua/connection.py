@@ -63,7 +63,7 @@ class HydraConnection(object):
             resp = AttrDict(resp)
         elif type(resp) == list:
             resp = [AttrDict(x) for x in resp]
-        hb.db.DBSession.close()
+        # hb.db.DBSession.close()
         return resp
 
     def update_add_data_user(self, admin_username, admin_password, username, password, role='modeller'):

@@ -4,7 +4,6 @@ from openagua.security import UserMixin, RoleMixin
 import jwt
 import datetime
 
-from hashlib import sha256
 from attrdict import AttrDict
 import json
 
@@ -309,16 +308,15 @@ class Model(db.Model):
 
 class NetworkModel(db.Model):
     """Models available for a study/network"""
-    model_id = db.Column('model_id', db.Integer(), db.ForeignKey('model.id', ondelete='CASCADE'), primary_key=True)
-    dataurl_id = db.Column('dataurl_id', db.Integer(), db.ForeignKey('dataurl.id', ondelete='CASCADE'),
-                           primary_key=True)
-    network_id = db.Column('network_id', db.Integer(), primary_key=True)
-    active = db.Column('active', db.Boolean())
+    model_id = db.Column(db.Integer(), db.ForeignKey('model.id', ondelete='CASCADE'), primary_key=True)
+    dataurl_id = db.Column(db.Integer(), db.ForeignKey('dataurl.id', ondelete='CASCADE'), primary_key=True)
+    network_id = db.Column(db.Integer(), primary_key=True)
+    active = db.Column(db.Boolean())
     settings = db.Column(db.Text())  # settings for the model
 
     db.UniqueConstraint('model_id', 'dataurl_id', 'network_id')
 
-    model = db.relationship('Model')
+    # model = db.relationship('Model')
 
     def get(self, setting):
         settings = json.loads(self.settings if self.settings else '{}')
@@ -332,8 +330,7 @@ class NetworkModel(db.Model):
 class UserNetworkSettings(db.Model):
     """Models available for a study/network"""
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id', ondelete='CASCADE'))
-    dataurl_id = db.Column('dataurl_id', db.Integer(), db.ForeignKey('dataurl.id', ondelete='CASCADE'),
-                           primary_key=True)
+    dataurl_id = db.Column(db.Integer(), db.ForeignKey('dataurl.id', ondelete='CASCADE'), primary_key=True)
     network_id = db.Column('network_id', db.Integer(), primary_key=True)
     settings = db.Column(mutable_json_type(dbtype=db.JSON(), nested=True))  # settings for the network
 

@@ -59,8 +59,8 @@ app.config.SWAGGER_SUPPORTED_SUBMIT_METHODS = ['get']
 
 engine_options = dict(
     pool_size=50,
+    max_overflow=25,
     pool_recycle=300,
-    max_overflow=25
 )
 
 db = SQLAlchemy(app, engine_options=engine_options)
