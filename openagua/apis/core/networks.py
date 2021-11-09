@@ -536,7 +536,7 @@ class Node(Resource):
         if update_types:
             incoming_node['types'] = update_types(incoming_node, 'NODE')
         g.conn.call('update_node', incoming_node)
-        node = incoming_node
+        node = incoming_node  # Hydra Platform does not return attributes with update_node
 
         return jsonify(nodes=[node], links=links, del_nodes=[old_node_id], del_links=old_link_ids)
 
@@ -819,7 +819,7 @@ class ResourceAttribute(Resource):
         resp = g.conn.call(
             'update_resource_attribute',
             resource_attr_id=res_attr_id, is_var=is_var, unit=unit, data_type=data_type,
-            description=description, properties=properties)
+            description=description, properties=json.dumps(properties))
         return '', 204
 
     @api.doc(
