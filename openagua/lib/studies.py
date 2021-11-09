@@ -1,7 +1,7 @@
-from flask import session, g, json, current_app
+from flask import g, json
 from attrdict import AttrDict
 
-from openagua.models import Study, DataUser, Star
+from openagua.models import Study, Star
 from openagua.security import current_user
 from openagua.lib.users import get_datauser, get_dataurl, get_dataurl_by_id, get_datausers
 
