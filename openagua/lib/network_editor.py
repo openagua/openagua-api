@@ -397,7 +397,7 @@ def add_link(conn, network, template, ttypes, incoming_link, existings, split_lo
     This also splits intersected existing links as needed.
     '''
 
-    inflow_type = default_types['inflow']
+    inflow_type = default_types.get('inflow')
     outflow_type = default_types['outflow']
     junction_type = default_types.get('junction')
 

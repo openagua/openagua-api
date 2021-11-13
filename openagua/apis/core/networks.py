@@ -620,37 +620,37 @@ class Links(Resource):
             # TODO: get inflow/outflow node time from template
             default_types = get_default_types(template)
 
-        # create the new link(s)
-        for incoming in incoming_links:
+            # create the new link(s)
+            for incoming in incoming_links:
 
-            existing = incoming.pop('existing', _existing)
-            split_locs = incoming.pop('splitLocs', _split_locs)
+                existing = incoming.pop('existing', _existing)
+                split_locs = incoming.pop('splitLocs', _split_locs)
 
-            incoming.pop('resType', None)
+                incoming.pop('resType', None)
 
-            if incoming.get('id', -1) <= 0 or existing:
+                if incoming.get('id', -1) <= 0 or existing:
 
-                _new_nodes, _new_links, _del_nodes, _del_links, network = add_link(
-                    conn=g.conn,
-                    network=network,
-                    template=template,
-                    ttypes=templatetypes,
-                    incoming_link=incoming_link,
-                    existings=existing,
-                    split_locs=split_locs,
-                    default_types=default_types,
-                    del_nodes=[]
-                )
+                    _new_nodes, _new_links, _del_nodes, _del_links, network = add_link(
+                        conn=g.conn,
+                        network=network,
+                        template=template,
+                        ttypes=templatetypes,
+                        incoming_link=incoming_link,
+                        existings=existing,
+                        split_locs=split_locs,
+                        default_types=default_types,
+                        del_nodes=[]
+                    )
 
-                nodes.extend(_new_nodes)
-                links.extend(_new_links)
-                del_nodes.extend(_del_nodes)
-                del_links.extend(_del_links)
+                    nodes.extend(_new_nodes)
+                    links.extend(_new_links)
+                    del_nodes.extend(_del_nodes)
+                    del_links.extend(_del_links)
 
-            else:
-                incoming['types'] = update_types(incoming, 'LINK')
-                g.conn.call('update_link', incoming)
-                links.append(incoming)
+                else:
+                    incoming['types'] = update_types(incoming, 'LINK')
+                    g.conn.call('update_link', incoming)
+                    links.append(incoming)
 
         return jsonify(nodes=nodes, links=links, del_nodes=del_nodes, del_links=del_links)
 

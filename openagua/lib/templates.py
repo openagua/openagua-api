@@ -69,14 +69,14 @@ def add_template(template, is_public=False):
 def get_default_types(template, mapping=None):
     template_default_types = template.layout.get('default_types', {})
     mapping = mapping or dict(
-        inflow="Inflow Node",
-        outflow="Outflow Node",
+        inflow="Inflow",
+        outflow="Outflow",
         junction="Junction"
     )
     default_types = {}
     for key in ['inflow', 'outflow', 'junction']:
         if key in template_default_types:
-            templatetypes = [tt for tt in template['templatetypes'] if str(tt['id']) == template_default_types[key]]
+            templatetypes = [tt for tt in template['templatetypes'] if tt['id'] == int(template_default_types[key])]
             if templatetypes:
                 default_types[key] = templatetypes[0]
         else:
