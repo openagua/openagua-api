@@ -115,7 +115,7 @@ class HydraConnection(object):
 
     def add_node(self, network_id, node):
         node = self.call('add_node', network_id, node)
-        return self.get_node(node.id)
+        return self.get_node(node['id'])
 
     def get_template_id_from_network(self, network):
         if 'active_template_id' in network.layout:

@@ -137,7 +137,7 @@ class TemplateType(Resource):
         ttype = request.json.get('templatetype')
         if ttype['resource_type'] == 'LINK':
             ttype['layout'].pop('svg', None)
-        for ta in ttype['typeattrs']:
+        for ta in ttype.get('typeattrs', []):
             ta.pop('default_dataset', None)  # it's unclear why this is needed
         g.conn.call('update_templatetype', ttype)
         return '', 204
@@ -162,11 +162,11 @@ class TypeAttrs(Resource):
         return jsonify(tattr=ret_tattr)
 
 
-@api.route('/typeattrs/<int:type_attr_id>')
+@api.route('/typeattrs/<int:typeattr_id>')
 class TypeAttr(Resource):
 
     @api.doc(description='Update a template type attribute.')
-    def put(self, type_attr_id):
+    def put(self, typeattr_id):
         typeattr = request.json['tattr']
 
         if 'attr_is_var' in typeattr:
@@ -196,10 +196,8 @@ class TypeAttr(Resource):
         return jsonify(tattr=ret)
 
     @api.doc(description='Delete a template type attribute.')
-    def delete(self, type_attr_id):
-        typeattr = request.args.get('typeattr')
-        typeattr = json.loads(typeattr)
-        g.conn.call('delete_typeattr', typeattr)
+    def delete(self, typeattr_id):
+        g.conn.call('delete_typeattr', typeattr_id)
         return '', 204
 
 
