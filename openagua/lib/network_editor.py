@@ -398,7 +398,7 @@ def add_link(conn, network, template, ttypes, incoming_link, existings, split_lo
     '''
 
     inflow_type = default_types.get('inflow')
-    outflow_type = default_types['outflow']
+    outflow_type = default_types.get('outflow')
     junction_type = default_types.get('junction')
 
     ttype = ttypes[incoming_link['types'][0]['id']]
