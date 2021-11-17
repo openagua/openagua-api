@@ -526,17 +526,17 @@ class Node(Resource):
     def put(self, node_id):
 
         incoming_node = request.json.get('node')
-        update_types = request.json.get('update_types')
+        should_update_types = request.args.get('update_types', type=bool)
 
         links = []
         old_node_id = None
         old_link_ids = []
 
         # create the new node
-        if update_types:
+        if should_update_types:
             incoming_node['types'] = update_types(incoming_node, 'NODE')
         g.conn.call('update_node', incoming_node)
-        node = incoming_node  # Hydra Platform does not return attributes with update_node
+        node = g.conn.call('get_node', incoming_node['id'])  # Hydra Platform does not return attributes with update_node
 
         return jsonify(nodes=[node], links=links, del_nodes=[old_node_id], del_links=old_link_ids)
 
