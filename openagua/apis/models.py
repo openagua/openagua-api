@@ -85,8 +85,9 @@ class ModelEngine(Resource):
         model = request.json.get('model')
         template_id = request.json.get('template_id')
         model.pop('templates', None)
-        model = update_model(**model)
-        ret_model = model.to_json(include_templates=True)
+        updated_model = update_model(**model)
+        ret_model = updated_model.to_json(include_templates=True)
+        ret_model['project_id'] = model.get('project_id')
         return jsonify(model=ret_model)
 
     def delete(self, model_id):
