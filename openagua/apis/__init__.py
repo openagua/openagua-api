@@ -80,15 +80,15 @@ def before_api0_requests():
     return
 
 
-@api_authentication_required
 @api_blueprint.before_request
+@api_authentication_required
 def before_api_requests():
     if request.method == 'OPTIONS':  # pre-flight request
         return
     args = request.args
     body = request.get_json() or {}
     form = request.form
-    g.dataurl_id = args.get('sourceId', type=int) or body.get('sourceId') or form.get('sourceId')
+    g.dataurl_id = args.get('sourceId', type=int) or body.get('sourceId') or form.get('sourceId') or 1
     g.project_id = args.get('projectId', type=int) or body.get('projectId')
     g.network_id = args.get('networkId', type=int) or body.get('networkId')
     g.template_id = args.get('templateId', type=int) or body.get('templateId')
