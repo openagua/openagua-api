@@ -9,7 +9,7 @@ from openagua.apis import api
 class Scenarios(Resource):
     def post(self):
         incoming_scenario = request.json['scenario']
-        network_id = request.args.get('network_id')
+        network_id = request.json.get('network_id')
         incoming_scenario['network_id'] = network_id
         parent_id = incoming_scenario.get('parent_id')
 
@@ -35,7 +35,8 @@ class Scenario(Resource):
 
     @api.doc(description='Get a scenario.')
     def get(self, scenario_id):
-        scenario = g.conn.call('get_scenario', scenario_id, include_data=False)
+        include_data = request.args.get('include_data') in ['1', 'True', 'true']
+        scenario = g.conn.call('get_scenario', scenario_id, include_data=include_data)
         return jsonify(scenario=scenario)
 
     def put(self, scenario_id):

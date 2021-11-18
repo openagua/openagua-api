@@ -112,6 +112,7 @@ class ResourceScenarioData(Resource):
                     resource_type.upper(),
                     resource_id,
                     attr_id,
+                    False,
                 )
                 res_attr_id = res_attr['id']
 

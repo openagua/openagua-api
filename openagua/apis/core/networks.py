@@ -526,18 +526,25 @@ class Node(Resource):
     def put(self, node_id):
 
         incoming_node = request.json.get('node')
-        should_update_types = request.args.get('update_types', type=bool)
+        should_update_types = request.args.get('update_types', 'false') == 'true'
 
         links = []
         old_node_id = None
         old_link_ids = []
 
-        # create the new node
         if should_update_types:
             incoming_node['types'] = update_types(incoming_node, 'NODE')
-        g.conn.call('update_node', incoming_node)
-        node = g.conn.call('get_node', incoming_node['id'])  # Hydra Platform does not return attributes with update_node
 
+        resp = g.conn.call('update_node', incoming_node)
+        node = g.conn.call('get_node', incoming_node['id'])
+
+        # This is a hack to account for Hydra Platform differences between nodes from networks and from get_node
+        resource_types = []
+        for rt in node['types']:
+            tt = rt.pop('templatetype')
+            tt.pop('typeattrs')
+            resource_types.append(tt)
+        node['types'] = resource_types
         return jsonify(nodes=[node], links=links, del_nodes=[old_node_id], del_links=old_link_ids)
 
     @api.doc(
@@ -767,18 +774,13 @@ class ResourceAttributes(Resource):
     #             ret.append(ra)
     #     return jsonify(res_attrs=ret)
 
-    @api.doc('Add resource attribute data')
+    @api.doc('Add resource attribute')
     def post(self):
         res_type = request.json['res_type']
         res_id = request.json['res_id']
-        attribute = request.json['attribute']
+        attr_id = request.json['attr_id']
         is_var = request.json['is_var']
-        group = request.json['group']
-
-        # get/create attribute
-        attr = g.conn.call('get_attribute', attribute['name'], attribute['dimen'])
-        if not attr:
-            attr = g.conn.call('add_attribute', attribute)
+        group = request.json.get('group')
 
         # get/create group
         if group and group['id'] is None:
@@ -789,9 +791,10 @@ class ResourceAttributes(Resource):
         # create attribute
         is_var = 'Y' if is_var else 'N'
         res_attr = g.conn.call(
-            'add_{}_attribute'.format(res_type), **{
-                '{}_id'.format(res_type): res_id,
-                'attr_id': attr['id'],
+            'add_resource_attribute', **{
+                'resource_type': res_type,
+                'resource_id': res_id,
+                'attr_id': attr_id,
                 'is_var': is_var
             })
 
