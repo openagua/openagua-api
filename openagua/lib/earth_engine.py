@@ -12,5 +12,6 @@ def create_ee(app):
         ee.Initialize()
         app.ee = ee
 
-    except:
+    except Exception as e:
+        print(e)
         app.ee = None
