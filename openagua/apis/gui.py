@@ -17,13 +17,14 @@ class Keys(Resource):
 class PopulationGrid(Resource):
 
     def get(self):
-        density2015 = current_app.ee.Image('CIESIN/GPWv4/unwpp-adjusted-population-density/2015')
+        density2020 = current_app.ee.Image('CIESIN/GPWv4/unwpp-adjusted-population-density/2020')
         palette = 'ffffde,509b92,03008d'
-        logDensity = density2015.where(density2015.gt(0), density2015.log())
+        logDensity = density2020.where(density2020.gt(0), density2020.log())
         # combined = composite(colorized, background)
         # antiAliased = combined.reduceResolution(ee.Reducer.mean(), true)
         antiAliased = logDensity.reduceResolution(current_app.ee.Reducer.mean(), True)
         image = antiAliased.getMapId({'min': 0, 'max': 8, 'palette': palette})
         # image = logDensity.getMapId({'min': 0, 'max': 8, 'palette': 'ffffde'})
         # image = logDensity.getMapId()
-        return jsonify(mapid=image['mapid'], token=image['token'])
+        url = image["tile_fetcher"]._url_format  # token no longer needed
+        return jsonify(url=url)
