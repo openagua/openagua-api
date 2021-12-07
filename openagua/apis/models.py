@@ -121,8 +121,9 @@ class RunConfiguration(Resource):
         network_id = request.json.get('network_id')
         config = request.json.get('config')
         network = g.conn.call('get_network', network_id, include_resources=False, include_data=False, summary=True)
-        network['layout']['run_configurations'] = [config if c.id == config['id'] else c for c in
-                                                   network['layout'].get('run_configurations', [])]
+        current_configurations = network['layout'].get('run_configurations', [])
+        new_configurations = [config if c['id'] == config['id'] else c for c in current_configurations]
+        network['layout']['run_configurations'] = new_configurations
         g.conn.call('update_network', network)
 
         return jsonify(config=config)
