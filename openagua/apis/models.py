@@ -132,7 +132,7 @@ class RunConfiguration(Resource):
         network_id = request.args.get('network_id', type=int)
         network = g.conn.call('get_network', network_id, include_resources=False, include_data=False, summary=True)
         network['layout']['run_configurations'] = [c for c in network['layout'].get('run_configurations', []) if
-                                                   c.id != config_id]
+                                                   c['id'] != config_id]
         g.conn.call('update_network', network)
 
         return '', 204
