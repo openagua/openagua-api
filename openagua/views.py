@@ -1,28 +1,9 @@
 from flask import render_template, send_from_directory, session, request, current_app, jsonify, g
 from openagua.security import login_required, current_user
 from openagua import app
-from openagua.request_functions import _load_active_study, _make_connection, _load_datauser
+from openagua.constants import KEY_NAMES
 import urllib.parse
 import hashlib
-
-from functools import wraps
-
-KEY_NAMES = {
-    'google': 'GOOGLE_PLACES_API_KEY',
-    'mapbox': 'MAPBOX_ACCESS_TOKEN',
-    'pubnub': 'PUBNUB_SUBSCRIBE_KEY'
-}
-
-
-# def load_the_basics(f):
-#     @wraps(f)
-#     def decorated_function(*args, **kwargs):
-#         _load_active_study()
-#         _load_datauser()
-#         _make_connection()
-#         return f(*args, **kwargs)
-#
-#     return decorated_function
 
 
 def set_active_network_panel(panel_name):

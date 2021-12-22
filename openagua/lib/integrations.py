@@ -1,13 +1,6 @@
 from flask import current_app
 
-import pubnub
-
-KEY_NAMES = {
-    'google': 'GOOGLE_PLACES_API_KEY',
-    'mapbox': 'MAPBOX_ACCESS_TOKEN',
-    'pubnub': 'PUBNUB_SUBSCRIBE_KEY'
-}
-
+from openagua.constants import KEY_NAMES
 
 def get_key_value(key):
     key_value = None
