@@ -196,7 +196,7 @@ def publish_callback(result, status):
     # Handle PNPublishResult and PNStatus
 
 
-def set_model_run_state(sid, state):
+def publish_model_run_state(sid, state):
     message = {
         'state': state,
         'sid': sid,
@@ -224,8 +224,12 @@ def get_run(sid):
     return run
 
 
-def cancel_model_run(**kwargs):
-    set_model_run_state(state=ProcessState.CANCELED, **kwargs)
+def pause_model_run(sid):
+    publish_model_run_state(sid, ProcessState.PAUSED)
+
+
+def cancel_model_run(sid):
+    publish_model_run_state(sid, ProcessState.CANCELED)
 
 
 def get_run_records(source_id=None, network_id=None):

@@ -3,7 +3,7 @@ from flask_restx import Resource, Namespace
 from ..security import current_user
 
 from openagua.lib.model_editor import get_model, get_models, delete_model, update_model, add_model_template, add_model
-from openagua.lib.model_control import start_model_run, cancel_model_run, add_ping, emit_progress, ProcessState, \
+from openagua.lib.model_control import start_model_run, pause_model_run, cancel_model_run, add_ping, emit_progress, ProcessState, \
     end_model_run, get_run_records, delete_run_record, delete_run_records
 from openagua.utils import get_network_model
 from openagua.lib.integrations import authorize_pubnub_user
@@ -159,7 +159,7 @@ class ModelRun(Resource):
     def delete(self, sid):
         source_id = request.args.get('sourceId', type=int)
         network_id = request.args.get('network_id', type=int)
-        cancel_model_run(sid=sid)
+        cancel_model_run(sid)
 
         data = dict(
             sid=sid,
@@ -201,6 +201,7 @@ class ModelRun(Resource):
             end_model_run(sid, ProcessState.CANCELED, data)
 
         elif action == 'pause':
+            pause_model_run(sid)
             pass  # TODO: update
 
         elif action == 'resume':
