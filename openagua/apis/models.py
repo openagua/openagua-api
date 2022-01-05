@@ -105,7 +105,7 @@ class RunConfigurations(Resource):
         configs = network['layout'].get('run_configurations', [])
 
         config = dict(
-            id=max([config.id for config in configs]) + 1 if configs else 1,
+            id=max([config['id'] for config in configs]) + 1 if configs else 1,
             **new_config
         )
         configs.append(config)
@@ -148,7 +148,8 @@ class ModelRuns(Resource):
         guid = request.json.get('guid')
         computer_id = request.json.get('computer_id')
         config = request.json.get('config', {})
-        ret = start_model_run(g.conn, network_id, guid, config, computer_id=computer_id)
+        scenarios = request.json.get('scenarios', [])
+        ret = start_model_run(g.conn, network_id, guid, config, scenarios, computer_id=computer_id)
 
         return jsonify(ret)
 

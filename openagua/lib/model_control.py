@@ -81,7 +81,7 @@ def get_pings(source_id=None, network_id=None):
     return Ping.query.filter_by(source_id=source_id, network_id=network_id).all()
 
 
-def start_model_run(conn, network_id, guid, config, computer_id=None):
+def start_model_run(conn, network_id, guid, config, scenarios, computer_id=None):
     # 1. get user input
 
     default_run_name = 'network-{}'.format(network_id)
@@ -91,7 +91,7 @@ def start_model_run(conn, network_id, guid, config, computer_id=None):
     run_name = config.get('name', default_run_name)
     run_key = config.pop('key', None)
     extra_args = config.get('extra_args', '')
-    scenario_ids = config.get('scenarios', [[], []])
+    scenario_ids = scenarios
 
     # foresight = 'zero'  # get from user or network settings
 
@@ -104,8 +104,7 @@ def start_model_run(conn, network_id, guid, config, computer_id=None):
 
     service = model.service or "amqp"
 
-    # 3. Create new hydra scenarios: option + scenario combinations
-    scen_ids = list(itertools.product(scenario_ids[0], scenario_ids[1]))
+    # 3. Create new hydra scenarios: cartesian product of selected scenarios
 
     # 4. define arguments
 
@@ -115,7 +114,7 @@ def start_model_run(conn, network_id, guid, config, computer_id=None):
         username=g.datauser.username,
         source_id=g.datauser.dataurl_id,
         network_id=network_id,
-        scenario_ids=scen_ids,
+        scenario_ids=scenario_ids,
         run_id=config.get('id'),
         run_name=run_name,
         guid=guid,
@@ -125,13 +124,12 @@ def start_model_run(conn, network_id, guid, config, computer_id=None):
     )
 
     # save unique identifiers to send back so we can track progress.
-
-    sids = ['{}-{}-{}'.format(guid, sc1, sc2) if sc1 != sc2 else '{}-{}'.format(guid, sc1) for sc1, sc2 in scen_ids]
-    # data = {'guids': sids}
+    # these should match what is in the GUI
+    sids = ['-'.join([guid] + [str(i) for i in ids]) for ids in scenario_ids]
 
     # 4. record request
     # run_secret = uuid.uuid4().hex
-    for i, (sc1, sc2) in enumerate(scen_ids):
+    for i, scids in enumerate(scenario_ids):
         source_id = g.datauser.dataurl_id
         sid = sids[i]
         add_run(sid=sid, model_id=model.id, layout={'run_key': run_key})
@@ -150,7 +148,7 @@ def start_model_run(conn, network_id, guid, config, computer_id=None):
             'name': run_name,
             'source_id': source_id,
             'network_id': network_id,
-            'scids': [sc1] if sc1 == sc2 else [sc1, sc2],
+            'scids': scids,
             'status': ProcessState.REQUESTED,
             'progress': 0
         }
@@ -169,7 +167,7 @@ def start_model_run(conn, network_id, guid, config, computer_id=None):
 
     if error:
         # for sid in sids:
-        for i, (sc1, sc2) in enumerate(scen_ids):
+        for i, scids in enumerate(scenario_ids):
             sid = sids[i]
             source_id = g.datauser.dataurl_id
             add_ping(sid=sid, status=ProcessState.ERROR, source_id=source_id, network_id=network_id,
@@ -179,7 +177,7 @@ def start_model_run(conn, network_id, guid, config, computer_id=None):
                 'sid': sid,
                 'name': run_name,
                 'status': ProcessState.ERROR,
-                'scids': [sc1] if sc1 == sc2 else [sc1, sc2],
+                'scids': scids,
                 'progress': 0,
                 'network_id': network_id,
                 'source_id': source_id,
