@@ -108,9 +108,12 @@ def start_model_run(conn, network_id, guid, config, scenarios, computer_id=None)
 
     # 4. define arguments
 
+    host_url = request.host_url
+    request_host = host_url if 'localhost' in host_url else host_url.replace('http://', 'https://')
+
     model_kwargs = dict(
         name=model_name,
-        request_host=request.host_url,
+        request_host=request_host,
         username=g.datauser.username,
         source_id=g.datauser.dataurl_id,
         network_id=network_id,
