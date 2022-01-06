@@ -29,6 +29,6 @@ class Hydra(Resource):
             resp = g.conn.call(function_name, *hydra_args, **hydra_kwargs)
             return jsonify(resp)
         except AttributeError:
-            return "Server error. g.conn not defined."
+            return "Server error. g.conn not defined?"
         except Exception as err:
             return str(err)
