@@ -23,14 +23,19 @@ class Projects(Resource):
 
         if g.is_public_user:
             user_id = g.conn.user_id
+
         else:
             user_id = g.datauser.userid
 
+        is_public = request.args.get('is_public') == 'true'
         page = request.args.get('page', type=int)
         max_per_page = request.args.get('max_per_page', 10, type=int)
         include_networks = request.args.get('include_networks') == 'true'
+        search = request.args.get('search')
 
+        projects_count = g.conn.call('get_public_projects_count', search=search) if page == 1 else None
         projects = g.conn.call('get_projects', user_id, user_id=user_id, summary=True, page=page,
+                               public_only=is_public, search=search,
                                max_per_page=max_per_page, include_networks=include_networks)
 
         if projects is None:
@@ -40,7 +45,7 @@ class Projects(Resource):
 
         projects = prepare_projects_for_client(g.conn, projects, source_id, user_id, include_models=True)
 
-        return jsonify(projects=projects)
+        return jsonify(projects=projects, count=projects_count)
 
     @api.doc(description='Add a project.')
     def post(self):
