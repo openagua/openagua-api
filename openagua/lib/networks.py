@@ -12,6 +12,8 @@ import xlsxwriter
 from itertools import chain
 from xml.dom import minidom
 
+import pendulum
+
 from openagua.lib.network_editor import repair_network_references, update_links2, make_feature_collection
 from openagua.lib.templates import clean_template, clean_template2, add_template
 from openagua.lib.files import add_storage, upload_network_data, duplicate_folder
@@ -166,6 +168,79 @@ def add_network(conn, net, location=None, template_id=None, add_baseline=True, s
 
     return network
 
+def get_network(network_id, simple=False, summary=True, include_resources=True, repair=False, repair_options=None):
+
+    if simple:
+        network = g.conn.call('get_network', network_id, include_resources=include_resources, summary=summary,
+                              include_data=False)
+        return network
+
+    network = g.conn.call('get_network', network_id, include_resources=True, summary=False,
+                          include_data=False)
+
+    if network is None or 'error' in network:
+        return network
+
+    # add baseline scenario if it's missing
+    baseline = [s for s in network.scenarios if s.layout.get('class') == 'baseline']
+    update_baseline = False
+    if not baseline:
+        update_baseline = True
+        if network['scenarios']:
+            baseline = network['scenarios'][0]
+            baseline['layout'] = baseline.get('layout', {})
+            baseline['layout']['class'] = 'baseline'
+            baseline = g.conn.call('update_scenario', baseline)
+        else:
+            baseline = {
+                'name': 'baseline',
+                'layout': {'class': 'baseline'},
+            }
+            baseline = g.conn.call('add_scenario', network_id, baseline)
+    else:
+        baseline = baseline[0]
+
+    # this just fixes some legacy issue and should be removed eventually
+    # TODO: remove this at some point?
+    settings = network.layout.get('settings')
+    if settings and not baseline.get('start_time') and not g.is_public_user:
+        start = settings.get('start')
+        end = settings.get('end')
+        timestep = settings.get('timestep')
+        fmt = '%Y-%m-%d %H:%M:%S'
+        baseline.update(
+            start_time=pendulum.parse(start).format(fmt) if start else None,
+            end_time=pendulum.parse(end).format(fmt) if end else None,
+            time_step=timestep
+        )
+        update_baseline = start and end and timestep
+        if start or end:
+            if start:
+                settings.pop('start')
+            if end:
+                settings.pop('end')
+            network['layout']['settings'] = settings
+            nodes = network.pop('nodes')  # remove temporarily to save time/bandwidth
+            links = network.pop('links')
+            g.conn.call('update_network', network)
+            network.update(nodes=nodes, links=links)
+
+    if update_baseline:
+        baseline = g.conn.call('update_scenario', baseline)
+        network['scenarios'] = [baseline if baseline.id == s.id else s for s in network.scenarios]
+
+    owner = [o for o in network.owners if o.user_id == g.conn.user_id][0]
+    network['editable'] = owner.edit == 'Y'
+
+    # add storage if it's missing
+    if not network['layout'].get('storage'):
+        location = current_app.config.get('NETWORK_FILES_STORAGE_LOCATION')
+        network = add_storage(network, location)
+
+    if repair:
+        network = repair_network(g.conn, g.source_id, network=network, options=repair_options)
+
+    return network
 
 def autoname(ttype, network):
     base = '{}-{}-{}'.format(network.name.replace(' ', '')[:5].upper(), ttype['resource_type'][0],
@@ -249,14 +324,9 @@ def repair_network(conn, source_id, network_id=None, network=None, options=None)
                     network['nodes'] = [n for n in network.nodes if n.id not in old_node_ids] + [new_node]
                     network['links'] = [l for l in network.links if l.id not in old_link_ids] + all_new_links
 
-
     else:
         template_id = network.layout.get('active_template_id')
         template = conn.call('get_template', template_id)
-
-    # add storage
-    location = current_app.config.get('NETWORK_FILES_STORAGE_LOCATION')
-    network = add_storage(network, location)
 
     # repair missing attributes
     if {'types-attrs', 'topology'} & set(options):
@@ -850,7 +920,7 @@ def clone_network(conn, network_id, **kwargs):
 
         for rs in scen['resourcescenarios']:
             metadata = json.loads(rs.get('value', {}).get('metadata', ''))
-            if metadata:
+            if metadata and 'function' in metadata:
                 metadata['function'] = update_function(metadata.get('function'))
                 rs['value']['metadata'] = json.dumps(metadata)
 

@@ -3,12 +3,10 @@ from os.path import splitext
 
 from flask import current_app, jsonify, g, request, send_file, make_response
 from flask_restx import Resource, fields
-# from flask_uploads import UploadSet, ARCHIVES, configure_uploads
-import pendulum
 from attrdict import AttrDict
 
 from openagua.security import login_required, current_user
-from openagua.lib.networks import repair_network, update_network_on_mapbox, update_types, get_network_for_export, \
+from openagua.lib.networks import get_network, update_network_on_mapbox, update_types, get_network_for_export, \
     make_network_thumbnail, save_network_preview, clone_network, move_network, import_from_json, \
     get_network_settings, add_update_network_settings, delete_network_settings
 from openagua.lib.sharing import set_resource_permissions, share_resource
@@ -19,13 +17,9 @@ from openagua.lib.network_editor import add_link, add_network_reference, update_
 from openagua.utils import update_network_model, change_active_template
 from openagua.lib.addins.weap_import import import_from_weap
 
-from openagua import app, socketio
+from openagua import socketio
 
 from openagua.apis import api0, api
-
-
-# templates = UploadSet('templates', ARCHIVES, default_dest=lambda app: app.instance_path)
-# configure_uploads(app, templates)
 
 
 @api.route('/networks')
@@ -118,81 +112,25 @@ class Network(Resource):
     def get(self, network_id):
 
         simple = request.args.get('simple', False)
-
-        if simple:
-            summary = request.args.get('summary', True)
-            include_resources = request.args.get('include_resources', True)
-            network = g.conn.call('get_network', network_id, include_resources=include_resources, summary=summary,
-                                  include_data=False)
-            return jsonify(network=network)
-
+        summary = request.args.get('summary', True)
+        include_resources = request.args.get('include_resources', True)
         repair = request.args.get('repair', type=bool)
+        repair_options = request.args.getlist('repair_options[]')
 
-        network = g.conn.call('get_network', network_id, include_resources=True, summary=False,
-                              include_data=False)
+        network = get_network(
+            network_id,
+            simple=simple,
+            summary=summary,
+            include_resources=include_resources,
+            repair=repair,
+            repair_options=repair_options
+        )
+
         if network is None:
             return '', 511
 
         elif 'error' in network:
             return make_response(jsonify(network), 403)
-
-        baseline = [s for s in network.scenarios if s.layout.get('class') == 'baseline']
-        update_baseline = False
-        if not baseline:
-            update_baseline = True
-            if network.scenarios:
-                baseline = network.scenarios[0]
-                baseline['layout'] = baseline.get('layout', {})
-                baseline['layout']['class'] = 'baseline'
-                baseline = g.conn.call('update_scenario', baseline)
-            else:
-                baseline = {
-                    'name': 'baseline',
-                    'layout': {'class': 'baseline'},
-                }
-                baseline = g.conn.call('add_scenario', network_id, baseline)
-        else:
-            baseline = baseline[0]
-
-        # this just fixes some legacy issue and should be removed eventually
-        # TODO: remove this at some point?
-        settings = network.layout.get('settings')
-        if settings and not baseline.get('start_time') and not g.is_public_user:
-            start = settings.get('start')
-            end = settings.get('end')
-            timestep = settings.get('timestep')
-            fmt = '%Y-%m-%d %H:%M:%S'
-            baseline.update(
-                start_time=pendulum.parse(start).format(fmt) if start else None,
-                end_time=pendulum.parse(end).format(fmt) if end else None,
-                time_step=timestep
-            )
-            update_baseline = start and end and timestep
-            if start or end:
-                if start:
-                    settings.pop('start')
-                if end:
-                    settings.pop('end')
-                network['layout']['settings'] = settings
-                nodes = network.pop('nodes')  # remove temporarily to save time/bandwidth
-                links = network.pop('links')
-                g.conn.call('update_network', network)
-                network.update(nodes=nodes, links=links)
-
-        if update_baseline:
-            baseline = g.conn.call('update_scenario', baseline)
-            network['scenarios'] = [baseline if baseline.id == s.id else s for s in network.scenarios]
-
-        if g.is_public_user:
-            network['editable'] = False
-        else:
-            owner = [o for o in network.owners if o.user_id == g.conn.user_id][0]
-            network['editable'] = owner.edit == 'Y'
-
-        if repair:
-            options = request.args.getlist('repair_options[]')
-            repair_network(g.conn, g.source_id, network=network, options=options)
-            return '', 204
 
         return jsonify(network=network)
 
