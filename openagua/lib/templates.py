@@ -46,6 +46,9 @@ def clean_template2(template):
             for key in ['type_id', 'cr_date']:
                 ta.pop(key, None)
             ta['attr_id'] = None
+            if 'attr' in ta:
+                ta['name'] = ta['attr']['name']
+                ta['attr_id'] = ta['attr']['id']
 
     return template
 

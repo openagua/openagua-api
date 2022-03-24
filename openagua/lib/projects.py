@@ -1,9 +1,11 @@
-from flask import current_app
+from flask import g
 
 from urllib.parse import urlparse
+from openagua.connection import root_connection
 from openagua.security import current_user
 from openagua.lib.users import get_datauser, get_dataurl
-from openagua.lib.studies import get_study
+from openagua.lib.networks import prepare_network_for_import
+from openagua.lib.templates import clean_template, clean_template2
 from openagua.lib.model_editor import get_models, get_active_network_model
 from openagua.utils import decrypt
 from openagua.connection import HydraConnection
@@ -128,13 +130,69 @@ def get_project_url(request_url, source_url, project_id):
     return project_url
 
 
+def copy_project(project):
+    conn = g.conn
+    root_conn = root_connection()
+
+    old_project_id = project['id']
+
+    # 1. create empty project
+    new_project = dict(
+        name=project['name'],
+        description=project['description'],
+        layout=project['layout']
+    )
+    new_project = conn.call('add_project', new_project)
+    new_project_id = new_project['id']
+
+    # copy templates
+
+    templates_map = {}  # map new templates to old template IDs
+
+    project_templates = g.conn.call('get_templates', project_id=old_project_id)
+    for project_template in project_templates:
+        tmpl = clean_template2(project_template.copy())
+        tmpl['project_id'] = new_project_id
+        template = conn.call('add_template', tmpl, check_dimensions=False)
+        templates_map[project_template['id']] = template
+
+    # copy networks
+
+    for net in project.get('networks'):
+
+        # update network template
+        template_id = net['layout'].get('active_template_id')
+        if template_id in templates_map:
+            template = templates_map[template_id]
+        elif template_id:
+            template = conn.call('get_template', template_id)
+            template = clean_template2(template)
+            template['project_id'] = new_project_id  # make sure it is scoped to the project
+            template = conn.call('add_template', template, check_dimensions=False)
+            templates_map[template_id] = template
+        else:
+            template = None
+
+        network = root_conn.call('get_network', net['id'], include_resources=True, include_data=True, summary=False)
+        network = prepare_network_for_import(network=network, template=template)
+        network['project_id'] = new_project_id
+        if template:
+            network['layout']['active_template_id'] = template['id']
+        resp = g.conn.call('add_network', network)
+
+    ret_project = g.conn.call('get_project', new_project_id)
+
+    return ret_project
+
+
 def prepare_projects_for_client(conn, projects, *args, **kwargs):
     kwargs['dataurl_id'] = get_dataurl(conn.url).id
     projects = [prepare_project_for_client(conn, p, *args, **kwargs) for p in projects]
     return projects
 
 
-def prepare_project_for_client(conn, project, source_id, source_user_id, dataurl_id=None, data_url=None, include_models=False):
+def prepare_project_for_client(conn, project, source_id, source_user_id, dataurl_id=None, data_url=None,
+                               include_models=False):
     dataurl_id = dataurl_id or get_dataurl(data_url).id
     editable = source_user_id in [owner['user_id'] for owner in project['owners'] if
                                   owner['user_id'] == source_user_id and owner['edit'] == 'Y']

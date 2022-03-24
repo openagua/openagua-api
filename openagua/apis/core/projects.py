@@ -1,14 +1,13 @@
 from flask import request, jsonify, g, current_app
 
 from openagua.security import current_user
-from openagua.lib.studies import delete_study, add_star, remove_star, get_stars
+from openagua.lib.studies import get_study, delete_study, add_star, remove_star, get_stars
 from openagua.lib.files import delete_all_network_files
 from openagua.lib.users import get_dataurl_by_id
 from openagua.lib.sharing import set_resource_permissions, share_resource
+from openagua.lib.projects import prepare_project_for_client, prepare_projects_for_client, copy_project
+
 from openagua import app
-
-from openagua.lib.projects import prepare_project_for_client, prepare_projects_for_client, get_study
-
 from openagua.apis import api
 from flask_restx import Resource
 
@@ -49,12 +48,18 @@ class Projects(Resource):
 
     @api.doc(description='Add a project.')
     def post(self):
-        proj = request.json.get('project')
-        resp = g.conn.call('add_project', proj)
-        if 'error' in resp:
-            return jsonify(resp)
+        project = request.json.get('project')
+        purpose = request.args.get('purpose')
+        if purpose == 'copy':
+            proj = copy_project(project)
         else:
-            project = resp
+            proj = g.conn.call('add_project', project)
+
+
+        if 'error' in proj:
+            return jsonify(proj)
+        else:
+            project = proj
 
         source_id = g.datauser.dataurl_id
         source_url = g.conn.url

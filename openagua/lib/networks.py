@@ -1283,7 +1283,7 @@ def import_from_json(conn, file, project_id):
 
 def prepare_network_for_import(network, template=None):
     if template:
-        ttypes = {(tt['resource_type'], tt['name']): tt for tt in template['types']}
+        ttypes = {(tt['resource_type'], tt['name']): tt for tt in template['templatetypes']}
 
     template_id = template['id'] if template else None
 
@@ -1292,6 +1292,9 @@ def prepare_network_for_import(network, template=None):
             resource['id'] = None
         else:
             resource['id'] = -abs(resource['id'])
+        if resource_type == 'LINK':
+            resource['node_1_id'] = -abs(resource['node_1_id'])
+            resource['node_2_id'] = -abs(resource['node_2_id'])
         for key in {'cr_date', 'created_by'}:
             resource.pop(key, None)
         if template_id:
