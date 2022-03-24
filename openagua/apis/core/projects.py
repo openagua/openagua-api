@@ -122,12 +122,15 @@ class Project(Resource):
         bucket_name = current_app.config['AWS_S3_BUCKET']
         for network in project.networks:
             delete_all_network_files(network, bucket_name, s3=app.s3)
+            g.conn.call('delete_network', network['id'], purge_data=True)
 
         templates = g.conn.call('get_templates', project_id=project_id)
         for template in templates:
             g.conn.call('delete_template', template_id=template['id'])
+
         resp = g.conn.call('delete_project', project_id, purge_data=True)
         if resp == 'OK':
+
             study = get_study(url=dataurl.url, project_id=project_id)
             delete_study(study_id=study.id)
 
