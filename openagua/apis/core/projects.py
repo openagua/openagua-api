@@ -130,7 +130,6 @@ class Project(Resource):
 
         resp = g.conn.call('delete_project', project_id, purge_data=True)
         if resp == 'OK':
-
             study = get_study(url=dataurl.url, project_id=project_id)
             delete_study(study_id=study.id)
 

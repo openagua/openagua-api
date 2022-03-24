@@ -1308,6 +1308,7 @@ def prepare_network_for_import(network, template=None):
         update_resource(node, 'NODE')
     for link in network['links']:
         update_resource(link, 'LINK')
+
     return network
 
 

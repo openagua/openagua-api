@@ -178,7 +178,23 @@ def copy_project(project):
         network['project_id'] = new_project_id
         if template:
             network['layout']['active_template_id'] = template['id']
-        resp = g.conn.call('add_network', network)
+        network['scenarios'] = [s for s in network['scenarios'] if s.get('layout', {}).get('class') != 'results']
+        new_network = g.conn.call('add_network', network)
+
+        # update the network scenarios with the correct parent_id (this should be in Hydra Platform)
+        new_scenario_parent_id_lookup = {}
+        for old_scenario in network['scenarios']:
+            old_scenario_parent_id = old_scenario['parent_id']
+            if old_scenario_parent_id:
+                new_scenario = [s for s in new_network['scenarios'] if s['name'] == old_scenario['name']][0]
+                if old_scenario_parent_id in new_scenario_parent_id_lookup:
+                    new_scenario_parent_id = new_scenario_parent_id_lookup[old_scenario_parent_id]
+                else:
+                    old_scenario_parent = [s for s in network['scenarios'] if s['id'] == old_scenario_parent_id][0]
+                    new_scenario_parent = [s for s in new_network['scenarios'] if s['name'] == old_scenario_parent['name']][0]
+                    new_scenario_parent_id_lookup[old_scenario_parent_id] = new_scenario_parent_id = new_scenario_parent['id']
+                new_scenario['parent_id'] = new_scenario_parent_id
+                g.conn.call('update_scenario', new_scenario)
 
     ret_project = g.conn.call('get_project', new_project_id)
 
