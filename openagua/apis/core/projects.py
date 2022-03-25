@@ -197,7 +197,6 @@ class ProjectPermissions(Resource):
     @api.response(204, 'Success')
     def put(self, project_id):
         permissions = request.json['permissions']
-
         for username, _permissions in permissions.items():
             results = set_resource_permissions(g.conn, 'project', project_id, username, _permissions)
 

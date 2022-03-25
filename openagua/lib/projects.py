@@ -132,68 +132,100 @@ def get_project_url(request_url, source_url, project_id):
 
 def copy_project(project):
     conn = g.conn
-    root_conn = root_connection()
 
-    old_project_id = project['id']
+    option = 1
 
-    # 1. create empty project
-    new_project = dict(
-        name=project['name'],
-        description=project['description'],
-        layout=project['layout']
-    )
-    new_project = conn.call('add_project', new_project)
-    new_project_id = new_project['id']
+    # OPTION 1: 100% Hydra Platform + extra stuff
 
-    # copy templates
+    if option == 1:
+        resp = conn.call('clone_project', project['id'], recipient_user_id=conn.id, new_project_name=project['name'],
+                         new_project_description=project['description'])
+        new_project_id = resp
 
-    templates_map = {}  # map new templates to old template IDs
+    # OPTION 2: roll-your-own
 
-    project_templates = g.conn.call('get_templates', project_id=old_project_id)
-    for project_template in project_templates:
-        tmpl = clean_template2(project_template.copy())
-        tmpl['project_id'] = new_project_id
-        template = conn.call('add_template', tmpl, check_dimensions=False)
-        templates_map[project_template['id']] = template
+    else:
 
-    # copy networks
+        root_conn = root_connection()
 
-    for net in project.get('networks'):
+        old_project_id = project['id']
 
-        # update network template
-        template_id = net['layout'].get('active_template_id')
-        if template_id in templates_map:
-            template = templates_map[template_id]
-        elif template_id:
-            template = conn.call('get_template', template_id)
-            template = clean_template2(template)
-            template['project_id'] = new_project_id  # make sure it is scoped to the project
-            template = conn.call('add_template', template, check_dimensions=False)
-            templates_map[template_id] = template
-        else:
-            template = None
+        # 1. create empty project
+        new_project = dict(
+            name=project['name'],
+            description=project['description'],
+            layout=project['layout']
+        )
+        new_project = conn.call('add_project', new_project)
+        new_project_id = new_project['id']
 
-        network = root_conn.call('get_network', net['id'], include_resources=True, include_data=True, summary=False)
-        network = prepare_network_for_import(network=network, template=template)
-        network['project_id'] = new_project_id
-        if template:
-            network['layout']['active_template_id'] = template['id']
-        network['scenarios'] = [s for s in network['scenarios'] if s.get('layout', {}).get('class') != 'results']
-        new_network = g.conn.call('add_network', network)
+        # copy templates
 
-        # update the network scenarios with the correct parent_id (this should be in Hydra Platform)
-        new_scenario_parent_id_lookup = {}
-        for old_scenario in network['scenarios']:
-            old_scenario_parent_id = old_scenario['parent_id']
-            if old_scenario_parent_id:
-                new_scenario = [s for s in new_network['scenarios'] if s['name'] == old_scenario['name']][0]
-                if old_scenario_parent_id in new_scenario_parent_id_lookup:
-                    new_scenario_parent_id = new_scenario_parent_id_lookup[old_scenario_parent_id]
-                else:
-                    old_scenario_parent = [s for s in network['scenarios'] if s['id'] == old_scenario_parent_id][0]
-                    new_scenario_parent = [s for s in new_network['scenarios'] if s['name'] == old_scenario_parent['name']][0]
-                    new_scenario_parent_id_lookup[old_scenario_parent_id] = new_scenario_parent_id = new_scenario_parent['id']
-                new_scenario['parent_id'] = new_scenario_parent_id
+        templates_map = {}  # map new templates to old template IDs
+
+        project_templates = g.conn.call('get_templates', project_id=old_project_id)
+        for project_template in project_templates:
+            tmpl = clean_template2(project_template.copy())
+            tmpl['project_id'] = new_project_id
+            template = conn.call('add_template', tmpl, check_dimensions=False)
+            templates_map[project_template['id']] = template
+
+        # copy networks
+
+        for net in project.get('networks'):
+
+            # update network template
+            template_id = net['layout'].get('active_template_id')
+            if template_id in templates_map:
+                template = templates_map[template_id]
+            elif template_id:
+                template = conn.call('get_template', template_id)
+                template = clean_template2(template)
+                template['project_id'] = new_project_id  # make sure it is scoped to the project
+                template = conn.call('add_template', template, check_dimensions=False)
+                templates_map[template_id] = template
+            else:
+                template = None
+
+            network = root_conn.call('get_network', net['id'], include_data=True, include_results=False,
+                                     include_non_template_attributes=True, include_metadata=True)
+            network = prepare_network_for_import(network=network, template=template)
+            network['project_id'] = new_project_id
+            network['scenarios'] = [s for s in network['scenarios'] if s.get('layout', {}).get('class') != 'results']
+
+            new_network = g.conn.call('add_network', network)
+
+            # dictionary of old resource IDs to new resource IDs
+            new_network_nodes = {n['name']: n['id'] for n in new_network['nodes']}
+            old_to_new_node_id = {n['id']: new_network_nodes[n['name']] for n in network['nodes']}
+
+            # update the network scenarios with data and the correct parent_id
+            # TODO: this should be in Hydra Platform
+            new_scenario_parent_id_lookup = {}
+            for old_scen in network['scenarios']:
+
+                # copy data
+                new_scenario = [s for s in new_network['scenarios'] if s['name'] == old_scen['name']][0]
+                old_scenario = root_conn.call('get_scenario', old_scen['id'])
+
+                # copy resourcescenarios
+                for rs in old_scenario['resourcescenarios']:
+                    for res_id in ['node_id', 'link_id', 'network_id']:
+                        if rs[res_id]:
+                            continue
+
+                old_scenario_parent_id = old_scenario['parent_id']
+                if old_scenario_parent_id:
+                    if old_scenario_parent_id in new_scenario_parent_id_lookup:
+                        new_scenario_parent_id = new_scenario_parent_id_lookup[old_scenario_parent_id]
+                    else:
+                        old_scenario_parent = [s for s in network['scenarios'] if s['id'] == old_scenario_parent_id][0]
+                        new_scenario_parent = \
+                            [s for s in new_network['scenarios'] if s['name'] == old_scenario_parent['name']][0]
+                        new_scenario_parent_id_lookup[old_scenario_parent_id] = new_scenario_parent_id = \
+                            new_scenario_parent['id']
+                    new_scenario['parent_id'] = new_scenario_parent_id
+
                 g.conn.call('update_scenario', new_scenario)
 
     ret_project = g.conn.call('get_project', new_project_id)
