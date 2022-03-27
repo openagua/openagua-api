@@ -140,7 +140,7 @@ class Network(Resource):
         data = request.json
         layout = data.get('layout', {})
 
-        network = g.conn.call('get_network', network_id, summary=True, include_data=False, include_resources=False)
+        network = g.conn.call('get_network', network_id, include_data=False, include_resources=False)
 
         if layout:
 
@@ -155,13 +155,17 @@ class Network(Resource):
                 update_network_model(g.conn.url, network_id=network_id, model_id=active_model_id)
 
             network['layout'].update(layout)
-            g.conn.call('update_network', network)
 
         else:
             network.update(data)
-            g.conn.call('update_network', network)
 
-        return '', 204
+        resp = g.conn.call('update_network', network)
+
+        if 'error' in resp:
+            return 'error', 501
+
+        else:
+            return '', 204
 
     def delete(self, network_id):
         network = g.conn.call('get_network', network_id, include_resources=False, include_data=False,
@@ -361,9 +365,9 @@ class NetworkPermissions(Resource):
         return jsonify(results)
 
     @api.doc(description="Update network permissions.")
+    @api.response(204, 'Success')
     def put(self, network_id):
-        data = request.get_json()
-        permissions = data.get('permissions')
+        permissions = request.json['permissions']
         for username, _permissions in permissions.items():
             results = set_resource_permissions(g.conn, 'network', network_id, username, _permissions)
 

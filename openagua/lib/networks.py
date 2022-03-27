@@ -1290,12 +1290,14 @@ def prepare_network_for_import(network, template=None):
     def update_resource(resource, resource_type):
         if resource_type == 'NETWORK':
             resource['id'] = None
+            if template_id:
+                resource['layout'] = {'active_template_id': template_id}
         else:
             resource['id'] = -abs(resource['id'])
         if resource_type == 'LINK':
             resource['node_1_id'] = -abs(resource['node_1_id'])
             resource['node_2_id'] = -abs(resource['node_2_id'])
-        for key in {'cr_date', 'created_by'}:
+        for key in {'cr_date', 'created_by', 'owners'}:
             resource.pop(key, None)
         if template_id:
             resource['types'] = [{'id': ttypes.get((resource_type, rt['name']))['id'], 'template_id': template_id} for
