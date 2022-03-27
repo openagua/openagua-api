@@ -1,14 +1,13 @@
 from flask import g
 
 from urllib.parse import urlparse
-from openagua.connection import root_connection
 from openagua.security import current_user
 from openagua.lib.users import get_datauser, get_dataurl
-from openagua.lib.networks import prepare_network_for_import
 from openagua.lib.templates import clean_template, clean_template2
 from openagua.lib.model_editor import get_models, get_active_network_model
 from openagua.utils import decrypt
 from openagua.connection import HydraConnection
+from hydra_base import remove_template_from_network
 
 
 def move_project(key, **kwargs):
@@ -130,6 +129,27 @@ def get_project_url(request_url, source_url, project_id):
     return project_url
 
 
+def change_network_template(network, new_template):
+    # old_id_name = {tt['id']: tt['name'] for tt in old_template['templatetypes']}
+    # new_name_id = {tt['name']: tt['id'] for tt in new_template['templatetypes']}
+    ttypes = {(tt['resource_type'], tt['name']): tt for tt in new_template['templatetypes']}
+
+    def update_resource(resource):
+        resource_type = 'NODE' if resource.get('x') else 'LINK' if resource.get('node_1_id') else 'NETWORK'
+        resource['types'] = [
+            {'id': ttypes.get((resource_type, rt['name']))['id'], 'template_id': new_template['id']}
+            for rt in resource.get('types', []) if (resource_type, rt['name']) in ttypes
+        ]
+
+    update_resource(network)
+    for node in network['nodes']:
+        update_resource(node)
+    for link in network['links']:
+        update_resource(link)
+
+    return network
+
+
 def copy_project(project):
     conn = g.conn
 
@@ -141,19 +161,22 @@ def copy_project(project):
 
     # copy templates
 
-    templates_map = {}  # map new templates to old template IDs
+    old_templates = {}  # map new templates to old template IDs
+    new_templates = {}
     project_templates = g.conn.call('get_templates', project_id=old_project_id)
-    for project_template in project_templates:
-        tmpl = clean_template2(project_template.copy())
+    for old_template in project_templates:
+        tmpl = clean_template2(old_template.copy())
         tmpl['project_id'] = new_project_id
         new_template = conn.call('add_template', tmpl, check_dimensions=False)
-        templates_map[project_template['id']] = new_template['id']
+        new_template = conn.call('get_template', new_template['id'])
+        old_templates[old_template['id']] = old_template
+        new_templates[old_template['id']] = new_template
 
     # copy networks
     old_networks = {n['name']: n['id'] for n in project['networks']}
+    for new_net in new_project['networks']:
 
-    for new_network in new_project['networks']:
-
+        new_network = conn.call('get_network', new_net['id'])
         new_network_id = new_network['id']
         old_network_id = old_networks[new_network['name']]
         old_network = conn.call('get_network', old_network_id)
@@ -161,25 +184,28 @@ def copy_project(project):
         # 1. update network template
 
         old_template_id = new_network.get('layout', {}).get('active_template_id')
-        if old_template_id in templates_map:
-            new_template_id = templates_map[old_template_id]
-        elif old_template_id:
-            template = conn.call('get_template', old_template_id)
-            template = clean_template2(template)
-            template['project_id'] = new_project_id  # make sure it is scoped to the project
-            template = conn.call('add_template', template, check_dimensions=False)
-            templates_map[old_template_id] = new_template_id = template['id']
-        else:
-            new_template_id = None
+        if old_template_id:
+            if old_template_id in new_templates:
+                old_template = old_templates[old_template_id]
+                new_template = new_templates[old_template_id]
+            else:
+                old_template = conn.call('get_template', old_template_id)
+                cleaned_template = clean_template2(old_template)
+                cleaned_template['project_id'] = new_project_id  # make sure it is scoped to the project
+                new_template = conn.call('add_template', cleaned_template, check_dimensions=False)
+                new_template = conn.call('get_template', new_template['id'])
+                old_templates[old_template_id] = old_template
+                new_templates[old_template_id] = new_template
 
-        if new_template_id:
-            new_network['layout'] = {'active_template_id': new_template_id}
-            resp = conn.call('update_network', new_network)
+            new_network['layout'] = {'active_template_id': new_template['id']}
 
-        if old_template_id and new_template_id:
-            # TODO: check the reliability of this!!!
+            # # TODO: check the reliability of this!!!
+            # resp = conn.call('remove_template_from_network', new_network_id, old_template_id, False)
+            # resp = conn.call('apply_template_to_network', new_template_id, new_network_id)
+            new_network = change_network_template(new_network, new_template)
+            new_network = conn.call('update_network', new_network)
             resp = conn.call('remove_template_from_network', new_network_id, old_template_id, False)
-            resp = conn.call('apply_template_to_network', new_template_id, new_network_id)
+
 
         # 2. update scenario dependency mapping
 
