@@ -348,7 +348,7 @@ footer:-ms-full-screen {
     background: white;
 }
 
-.bp3-portal {
+.bp4-portal {
     z-index: 100000;
 }
 
@@ -406,21 +406,21 @@ footer:-ms-full-screen {
     display: block;
 }
 
-.bp3-active .oa-favorite-helper-text {
+.bp4-active .oa-favorite-helper-text {
     color: #ddd;
 }
 
-.bp3-tabs.bp3-vertical > .bp3-tab-list .bp3-tab {
+.bp4-tabs.bp4-vertical > .bp4-tab-list .bp4-tab {
     display: flex;
 }
 
-.bp3-tab a {
+.bp4-tab a {
     height: 100%;
     text-decoration: none;
     color: initial;
 }
 
-.bp3-tab a:hover {
+.bp4-tab a:hover {
     text-decoration: none;
     color: initial;
 }
@@ -453,7 +453,7 @@ footer:-ms-full-screen {
     width: 200px;
 }
 
-.oa-fixed-button .bp3-button-text {
+.oa-fixed-button .bp4-button-text {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

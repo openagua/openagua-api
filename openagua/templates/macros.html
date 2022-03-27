@@ -5,9 +5,9 @@
         {% if category %}
         {# alert-error changed to alert-danger in bootstrap 3, mapping is for backwards compatibility #}
         {% set mapping = {'message': 'info', 'error': 'danger'} %}
-        <div class="bp3-callout bp3-intent-{{ mapping.get(category, category) }}">
+        <div class="bp4-callout bp4-intent-{{ mapping.get(category, category) }}">
         {% else %}
-        <div class="bp3-callout">
+        <div class="bp4-callout">
         {% endif %}
           {{ m }}
         </div>
