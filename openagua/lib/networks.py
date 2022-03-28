@@ -175,8 +175,7 @@ def get_network(network_id, simple=False, summary=True, include_resources=True, 
                               include_data=False)
         return network
 
-    network = g.conn.call('get_network', network_id, include_resources=True, summary=False,
-                          include_data=False)
+    network = g.conn.call('get_network', network_id, include_resources=True, include_data=False)
 
     if network is None or 'error' in network:
         return network
@@ -334,7 +333,7 @@ def repair_network(conn, source_id, network_id=None, network=None, options=None)
         update_resources = True
 
         if 'types-attrs' in options:
-            ttypes = {tt.id: tt for tt in template.templatetypes}
+            ttypes = {tt.id: tt for tt in template['templatetypes']}
 
         if 'topology' in options:
             node_coords = {}
@@ -353,8 +352,8 @@ def repair_network(conn, source_id, network_id=None, network=None, options=None)
                     tt = ttypes[rt.id]
                     rt['id'] = tt.id
                     updated_resource_types.append(rt)
-                    rattrs = set([ra.attr_id for ra in resource['attributes']])
-                    tattrs = set([ta.attr_id for ta in tt['typeattrs']])
+                    rattrs = set([ra['attr_id'] for ra in resource['attributes']])
+                    tattrs = set([ta['attr_id'] for ta in tt['typeattrs']])
                     missing_attrs = tattrs - rattrs
                     new_attrs = []
                     for ta in tt.typeattrs:

@@ -29,7 +29,7 @@ class Templates(Resource):
 
         if project_id or template_ids:
             if project_id:
-                templates = g.conn.call('get_templates', load_all=load_all, project_id=project_id)
+                templates = g.conn.call('get_templates', project_id=project_id)
                 try:
                     project_template_ids = [t.id for t in templates]
                 except:
@@ -46,7 +46,7 @@ class Templates(Resource):
             for template in templates:
                 try:
                     if template['layout'].get('project_id'):
-                        template['project_id'] = template.layout.project_id
+                        template['project_id'] = template['layout']['project_id']
                         del template['layout']['project_id']
                         g.conn.call('update_template', template, update_types=False)
                 except:

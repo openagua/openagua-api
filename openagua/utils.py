@@ -123,8 +123,7 @@ def get_templates(conn):
 
 
 def change_active_template(conn, source_id, network=None, network_id=None, new_template_id=None):
-    network = network or conn.call('get_network', network_id, summary=True, include_resources=True,
-                                    include_data=False)
+    network = network or conn.call('get_network', network_id, include_resources=True, include_data=False)
     current_tpl = network.layout.get('active_template_id')
     if current_tpl is not None:
         old_template_id = current_tpl if type(current_tpl) == int else current_tpl['id']
@@ -236,7 +235,9 @@ def change_active_template(conn, source_id, network=None, network_id=None, new_t
             rattrs = set([ra['attr_id'] for ra in resource['attributes']])
             tattrs = set([ta['attr_id'] for ta in tt['typeattrs']])
             missing_attrs = tattrs - rattrs
-            new_attrs = [ta for ta in tt['typeattrs'] if ta['attr_id'] in missing_attrs]
+            new_attrs = [
+                {'attr_id': ta['attr_id'], 'attr_is_var': ta['attr_is_var']}
+                         for ta in tt['typeattrs'] if ta['attr_id'] in missing_attrs]
             resource['attributes'].extend(new_attrs)
 
         return resource
