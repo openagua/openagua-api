@@ -115,8 +115,12 @@ class Template(Resource):
             return '', 204
 
     def delete(self, template_id):
-        resp = g.conn.call('delete_template', template_id)
-        return '', 204
+        delete_types = request.args.get('delete_types') == 'true'
+        resp = g.conn.call('delete_template', template_id, delete_resourcetypes=delete_types)
+        if 'error' in resp:
+            return 'Could not delete types', 501
+        else:
+            return '', 204
 
 
 @api.route('/templatetypes')
