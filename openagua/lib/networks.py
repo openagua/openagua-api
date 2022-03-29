@@ -168,8 +168,8 @@ def add_network(conn, net, location=None, template_id=None, add_baseline=True, s
 
     return network
 
-def get_network(network_id, simple=False, summary=True, include_resources=True, repair=False, repair_options=None):
 
+def get_network(network_id, simple=False, summary=True, include_resources=True, repair=False, repair_options=None):
     if simple:
         network = g.conn.call('get_network', network_id, include_resources=include_resources, summary=summary,
                               include_data=False)
@@ -181,7 +181,8 @@ def get_network(network_id, simple=False, summary=True, include_resources=True, 
         return network
 
     # add baseline scenario if it's missing
-    baseline = [s for s in network.scenarios if s.layout.get('class') == 'baseline']
+    baseline = [s for s in network['scenarios'] if
+                'layout' in s and s['layout'] and s['layout'].get('class') == 'baseline']
     update_baseline = False
     if not baseline:
         update_baseline = True
@@ -240,6 +241,7 @@ def get_network(network_id, simple=False, summary=True, include_resources=True, 
         network = repair_network(g.conn, g.source_id, network=network, options=repair_options)
 
     return network
+
 
 def autoname(ttype, network):
     base = '{}-{}-{}'.format(network.name.replace(' ', '')[:5].upper(), ttype['resource_type'][0],

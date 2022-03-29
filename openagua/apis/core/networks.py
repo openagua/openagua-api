@@ -120,7 +120,6 @@ class Network(Resource):
         network = get_network(
             network_id,
             simple=simple,
-            summary=summary,
             include_resources=include_resources,
             repair=repair,
             repair_options=repair_options
