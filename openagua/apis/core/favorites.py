@@ -22,7 +22,7 @@ class Favorites(Resource):
         dataurl = get_dataurl(g.conn.url) if not study_id else None
         dataurl_id = dataurl.id if dataurl else None
         network_id = request.args.get('network_id', type=int)
-        project_id = request.args.get('project_id', type=int)
+        project_id = request.args.get('project_id', type=int) or g.project_id
         if not study_id and not project_id:
             network = g.conn.call('get_network', network_id, include_resources=False, summary=True,
                                   include_data=False)
