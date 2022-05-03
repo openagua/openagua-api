@@ -1,5 +1,6 @@
 from flask import current_app as app
 from openagua.security import UserMixin, RoleMixin
+from sqlalchemy.dialects.mysql import LONGTEXT
 
 import jwt
 import datetime
@@ -227,7 +228,7 @@ class Favorite(db.Model):
     description = db.Column(db.String(255), server_default='')
     filters = db.Column(db.Text())
     setup = db.Column(db.Text())
-    content = db.Column(db.Text(), nullable=True)
+    content = db.Column(LONGTEXT, nullable=True)
 
     def to_json(self):
         j = {}

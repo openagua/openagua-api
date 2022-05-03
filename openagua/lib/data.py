@@ -531,7 +531,7 @@ def get_data_from_hydra(conn, scenarios, networks, nodes, links, ttypes, attrs, 
     for sc in scens:
         # scen_name = sc.name
 
-        for rs in sc.resourcescenarios:
+        for rs in sc['resourcescenarios']:
             value = rs.dataset.value
             if not json.loads(value):
                 if empty_timeseries is None:
