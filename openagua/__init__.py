@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from flask import Flask, g, session, flash, make_response, jsonify, url_for
 from flask_sqlalchemy import SQLAlchemy
@@ -50,7 +51,7 @@ app.config['SECRET_ENCRYPT_KEY'] = app.config['SECRET_ENCRYPT_KEY'].encode()
 
 # set up instance configuration
 instance_cfg = 'config.cfg'
-if os.path.exists(os.path.join(app.instance_path, instance_cfg)):
+if os.path.exists(Path(app.instance_path, instance_cfg)):
     app.config.from_pyfile(instance_cfg)
 
 app.config.SWAGGER_SUPPORTED_SUBMIT_METHODS = ['get']
@@ -112,8 +113,8 @@ app.register_blueprint(admin_openagua, url_prefix='')
 app.register_blueprint(auth0)
 
 # register before requests
-from .request_functions import _load_datauser, _make_connection, make_root_connection
-from .request_functions import _load_active_study
+from openagua.request_functions import _load_datauser, _make_connection, make_root_connection
+from openagua.request_functions import _load_active_study
 
 if app.config['INCLUDE_HYDROLOGY']:
     from openagua.hydrology import hydrology
@@ -150,6 +151,7 @@ app.s3 = s3_resource()
 pnconfig = PNConfiguration()
 pnconfig.subscribe_key = app.config.get('PUBNUB_SUBSCRIBE_KEY')
 pnconfig.publish_key = app.config.get('PUBNUB_PUBLISH_KEY')
+pnconfig.uuid = app.config.get('PUBNUB_UUID')
 pnconfig.ssl = False
 app.pubnub = PubNub(pnconfig)
 
@@ -163,4 +165,4 @@ app.rabbitmq = RabbitMQ(
     password=app.config.get('RABBITMQ_DEFAULT_PASSWORD')
 )
 
-from . import views
+from openagua import views
