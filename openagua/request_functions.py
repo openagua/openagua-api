@@ -16,10 +16,20 @@ def _load_active_study():
 
 def _load_datauser(url=None, user_id=None, source_id=None):
     datauser = None
-    g.source_id = source_id or request.args.get('sourceId', type=int) or request.json and request.json.get(
-        'sourceId') or request.form and request.form.get('sourceId')
+    if source_id:
+        g.source_id = source_id
+    elif not hasattr(g, 'source_id'):
+        if 'sourceId' in request.args:
+            g.source_id = request.args.get('sourceId', type=int)
+        elif request.form and request.form.get('sourceId'):
+            g.source_id = request.form.get('sourceId')
+        else:
+            try:
+                g.source_id = request.json.get('sourceId')
+            except:
+                g.source_id = 1
 
-    # get the user_id
+                # get the user_id
     if not user_id and not current_user.is_anonymous:
         user_id = current_user.id
 
@@ -36,7 +46,8 @@ def _load_datauser(url=None, user_id=None, source_id=None):
                 datauser = get_datauser(user_id=user_id, url=url) if url else None
 
     g.datauser = datauser
-    return None
+
+    return
 
 
 def _make_connection(is_public_user=False, user_id=None):
@@ -61,7 +72,6 @@ def make_user_connection():
             session_id=g.datauser.sessionid,
             username=g.datauser.username,
             user_id=g.datauser.userid,
-            # key=app.config['SECRET_ENCRYPT_KEY'],
             app_name=current_app.config.get('APP_NAME')
         )
     else:
