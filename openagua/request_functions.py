@@ -5,10 +5,23 @@ from openagua.lib.users import get_datauser
 from openagua.lib.studies import load_active_study
 
 
+def get_value_from_request(key, dtype=int, default=None):
+    args = request.args
+    body = request.json if request.method in ['POST', 'PUT', 'PATCH'] else {}
+    form = request.form
+    return args.get(key, type=dtype) or body.get(key) or form.get(key, type=dtype) or default
+
+
+def _load_request_params():
+    g.dataurl_id = get_value_from_request('sourceId', default=1)
+    g.project_id = get_value_from_request('projectId')
+    g.network_id = get_value_from_request('networkId')
+    g.template_id = get_value_from_request('templateId')
+
+
 def _load_active_study():
-    g.dataurl_id = request.args.get('sourceId', type=int) or request.json and request.json.get(
-        'sourceId') or request.form and request.form.get('sourceId', type=int)
-    g.project_id = request.args.get('projectId', type=int) or request.json and request.json.get('projectId')
+    g.dataurl_id = get_value_from_request('sourceId', default=1)
+    g.project_id = get_value_from_request('projectId')
     load_active_study(dataurl_id=g.dataurl_id, project_id=g.project_id)
 
     return
@@ -19,30 +32,17 @@ def _load_datauser(url=None, user_id=None, source_id=None):
     if source_id:
         g.source_id = source_id
     elif not hasattr(g, 'source_id'):
-        if 'sourceId' in request.args:
-            g.source_id = request.args.get('sourceId', type=int)
-        elif request.form and request.form.get('sourceId'):
-            g.source_id = request.form.get('sourceId')
-        else:
-            try:
-                g.source_id = request.json.get('sourceId')
-            except:
-                g.source_id = 1
+        g.source_id = get_value_from_request('sourceId', default=1)
 
-                # get the user_id
     if not user_id and not current_user.is_anonymous:
         user_id = current_user.id
 
         if g.source_id:
             datauser = get_datauser(user_id=user_id, dataurl_id=g.source_id)
         else:
-            url = url or request.args.get('url') or \
-                  request.json and request.json.get('url') or \
-                  request.form.get('url') or \
-                  session.get('data_url')
+            url = url or get_value_from_request('url', dtype=str, default=session.get('data_url'))
             if url or not g.get('datauser'):
                 url = url or current_app.config['DATA_URL']
-                # session['data_url'] = None # this should be for one time use, if used at all
                 datauser = get_datauser(user_id=user_id, url=url) if url else None
 
     g.datauser = datauser

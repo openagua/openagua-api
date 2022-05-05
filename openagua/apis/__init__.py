@@ -12,7 +12,7 @@ from .files import api as files_ns
 from openagua.security import login_required
 from openagua.security.authentication import api_authentication_required
 from openagua.lib.studies import load_active_study as _load_active_study
-from openagua.request_functions import _load_datauser, _make_connection
+from openagua.request_functions import _load_datauser, _make_connection, get_value_from_request
 
 
 # from .security import api as auth_ns
@@ -67,10 +67,7 @@ def before_api0_requests():
 
     g.dataurl_id = request.args.get('sourceId', type=int) \
                    or request.json and request.json.get('sourceId') or request.form.get('sourceId')
-    g.project_id = request.args.get('projectId', type=int) or request.json and request.json.get('projectId')
-    g.network_id = request.args.get('networkId', type=int) or request.json and request.json.get('networkId')
-    g.template_id = request.args.get('templateId', type=int) or request.json and request.json.get('templateId')
-
+    _load_incoming_params()
     _load_active_study(dataurl_id=g.dataurl_id, project_id=g.project_id)
     _load_datauser()
 
@@ -88,10 +85,7 @@ def before_api_requests():
     if request.endpoint in ['api.doc', 'api.specs']:
         return
     args = request.args
-    try:
-        body = request.json
-    except:
-        body = {}
+    body = request.json if request.method in ['POST', 'PUT', 'PATCH'] else {}
     form = request.form
     g.dataurl_id = args.get('sourceId', type=int) or body.get('sourceId') or form.get('sourceId') or 1
     g.project_id = args.get('projectId', type=int) or body.get('projectId')
