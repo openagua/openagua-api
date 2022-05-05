@@ -1,5 +1,5 @@
 from flask import current_app as app
-from munch import Munch
+from munch import Munch as AttrDict
 
 import hydra_base as hb
 from hydra_base.lib import objects
@@ -52,7 +52,7 @@ class HydraConnection(object):
             for item in ['project', 'network']:
                 if item in kwargs and 'owners' in kwargs[item]:
                     del kwargs[item]['owners']
-        args = tuple([dict(arg) if isinstance(arg, Munch) else arg for arg in list(args)])
+        args = tuple([dict(arg) if isinstance(arg, AttrDict) else arg for arg in list(args)])
         try:
             # TODO: this is potentially dangerous. double check that this doesn't have unintended consequences
             self.hc.autocommit = fn[:4] != 'get_'
@@ -60,9 +60,9 @@ class HydraConnection(object):
         except Exception as err:
             return {'error': str(err)}
         if isinstance(resp, objects.JSONObject):
-            resp = Munch(resp)
+            resp = AttrDict(resp)
         elif type(resp) == list:
-            resp = [Munch(x) for x in resp]
+            resp = [AttrDict(x) for x in resp]
         # hb.db.DBSession.close()
         return resp
 

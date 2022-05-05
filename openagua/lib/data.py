@@ -1,6 +1,6 @@
 import json
 from copy import copy
-from munch import Munch
+from munch import Munch as AttrDict
 from itertools import product
 from ast import literal_eval
 import queue

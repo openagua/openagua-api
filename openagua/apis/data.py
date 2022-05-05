@@ -1,6 +1,6 @@
 from flask import request, jsonify, g, current_app, json
 from flask_restx import Namespace, Resource
-from munch import Munch
+from munch import Munch as AttrDict
 
 from openagua.security import current_user
 from openagua.lib.data import get_scenarios_data, make_eval_data, filter_input_data, prepare_dataset, \
@@ -201,7 +201,7 @@ class PivotInputData(Resource):
         if favorite_id:
             favorite = get_favorite(favorite_id=favorite_id)
             if favorite:
-                filters = Munch(json.loads(favorite.filters))
+                filters = AttrDict(json.loads(favorite.filters))
                 setup = json.loads(favorite.setup)
             else:
                 return jsonify(error=1)  # no favorite found
@@ -272,7 +272,7 @@ class PivotResultsData(Resource):
         template_id = request.args.get('template_id', type=int)
         project_id = request.args.get('project_id', type=int) or request.args.get('projectId', type=int)
         filters_str = request.args.get('filters', '{}')
-        filters = Munch(json.loads(filters_str))
+        filters = AttrDict(json.loads(filters_str))
 
         agg = filters.get('agg', {})
 

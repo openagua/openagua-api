@@ -1,5 +1,5 @@
 import io
-from munch import Munch
+from munch import Munch as AttrDict
 
 
 def readfromzip(zf, subdir, path):
@@ -21,7 +21,7 @@ def shapefile2geojson(sfreader):
             'geometry': sr.shape.__geo_interface__,
             'properties': properties
         }
-        features.append(Munch(geojson))
+        features.append(AttrDict(geojson))
     return features
 
 

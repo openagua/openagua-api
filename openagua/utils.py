@@ -2,7 +2,7 @@ import socket
 from datetime import datetime
 import json
 from cryptography.fernet import Fernet
-from munch import Munch
+from munch import Munch as AttrDict
 import xml.etree.ElementTree as ET
 from flask import g
 
@@ -32,7 +32,7 @@ def get_tattrs(template):
     for t in template.templatetypes:
         for ta in t.typeattrs:
             tattrs[ta.attr_id] = ta.copy()
-    return Munch(tattrs)
+    return AttrDict(tattrs)
 
 
 def get_res_attrs(network, template):
@@ -54,7 +54,7 @@ def get_res_attrs(network, template):
                     continue
                 res_attr = {'res_name': f.name, 'res_type': ttype, 'obj_type': obj_type}
                 res_attr.update(tattrs[ra.attr_id])
-                res_attrs[ra.id] = Munch(res_attr)
+                res_attrs[ra.id] = AttrDict(res_attr)
     return res_attrs
 
 
@@ -150,7 +150,7 @@ def change_active_template(conn, source_id, network=None, network_id=None, new_t
                 rt['template_id'] = new_tpl.id
             else:
                 # create new network type
-                rt = Munch({
+                rt = AttrDict({
                     'template_id': new_tpl.id,
                     'name': tt['name'],
                     'id': tt['id'],
@@ -182,7 +182,7 @@ def change_active_template(conn, source_id, network=None, network_id=None, new_t
                 old_rt = resource.types[-1]
                 if old_types is None and old_template_id is not None:
                     old_tpl = conn.call('get_template', old_template_id)
-                    old_types = Munch({(resource_class, tt.name.lower()): tt for tt in old_tpl.templatetypes})
+                    old_types = AttrDict({(resource_class, tt.name.lower()): tt for tt in old_tpl.templatetypes})
                 else:
                     old_types = {}
                 # add the old template type to the new template
@@ -309,7 +309,7 @@ def add_network_model(url, model_id, network_id, settings={}):
     dataurl = get_dataurl(url)
     nm = get_network_model(url=url, network_id=network_id, model_id=model_id)
     if nm is None:
-        if isinstance(settings, dict) or isinstance(settings, Munch):
+        if isinstance(settings, dict) or isinstance(settings, AttrDict):
             settings = json.dumps(settings)
         nm = NetworkModel(
             dataurl_id=dataurl.id,
@@ -331,7 +331,7 @@ def update_network_model(url, network_id, model_id, settings=None):
         nm.model_id = model_id
         nm.active = True
     else:
-        if isinstance(settings, dict) or isinstance(settings, Munch):
+        if isinstance(settings, dict) or isinstance(settings, AttrDict):
             settings = json.dumps(settings)
         nm = NetworkModel(
             dataurl_id=dataurl.id,

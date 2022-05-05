@@ -1,6 +1,6 @@
 import json
 from copy import deepcopy
-from munch import Munch
+from munch import Munch as AttrDict
 
 from flask import current_app
 
@@ -288,7 +288,7 @@ def make_links_from_geojson(conn, network, template, gj, existings, split_locs):
         if i:
             new_coords.append((x, y))
 
-        existing = Munch(existings[str(i)])
+        existing = AttrDict(existings[str(i)])
         # split_existing = False
 
         node_type = None
@@ -1115,7 +1115,7 @@ def add_network_reference(conn, network, reference, geojson):
     ref_ids = []
     refs = network.layout.get('refs', [])
     for ref in refs:
-        if type(ref) in [dict, Munch] and ref.get('id'):
+        if type(ref) in [dict, AttrDict] and ref.get('id'):
             ref_ids.append(ref['id'])
 
     if ref_ids:

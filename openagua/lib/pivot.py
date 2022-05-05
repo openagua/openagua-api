@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 import numpy as np
-from munch import Munch
+from munch import Munch as AttrDict
 
 from flask import g
 
@@ -12,7 +12,7 @@ NULL_VALUES = {
 
 
 def save_pivot_input(setup, filters, data, network, template, data_date_format):
-    setup = Munch(setup)
+    setup = AttrDict(setup)
 
     error = 0
 
@@ -23,7 +23,7 @@ def save_pivot_input(setup, filters, data, network, template, data_date_format):
     if not {'Scenario', 'Feature', 'Variable'}.issubset(pfilters):
         return -1
 
-    filters = Munch(filters)
+    filters = AttrDict(filters)
 
     data = np.array(data)
 

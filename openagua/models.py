@@ -5,7 +5,7 @@ from sqlalchemy.dialects.mysql import LONGTEXT
 import jwt
 import datetime
 
-from munch import Munch
+from munch import Munch as AttrDict
 import json
 
 from sqlalchemy_json import mutable_json_type
@@ -304,7 +304,7 @@ class Model(db.Model):
         if include_network_ids:
             for network in self.networks:
                 ret['network_ids'].append(network.network_id)
-        return Munch(ret)
+        return AttrDict(ret)
 
 
 class NetworkModel(db.Model):
@@ -325,7 +325,7 @@ class NetworkModel(db.Model):
 
     def to_json(self):
         ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
-        return Munch(ret)
+        return AttrDict(ret)
 
 
 class UserNetworkSettings(db.Model):
@@ -349,7 +349,7 @@ class UserNetworkSettings(db.Model):
 
     def to_json(self):
         ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
-        return Munch(ret)
+        return AttrDict(ret)
 
 
 class ModelTemplate(db.Model):
@@ -362,7 +362,7 @@ class ModelTemplate(db.Model):
     def to_json(self, include_models=False):
         ret = {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
-        return Munch(ret)
+        return AttrDict(ret)
 
 
 class InputSetup(db.Model):
