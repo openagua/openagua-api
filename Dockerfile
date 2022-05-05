@@ -11,8 +11,8 @@ RUN apt-get update \
     && apt-get install -y git \
     && apt-get install -y libffi-dev libpq-dev default-libmysqlclient-dev \
     && rm -rf /var/lib/apt/lists/* \
-    && pip install git+https://github.com/openagua/hydra-base.git\
-    && pip install git+https://github.com/openagua/hydra-client-python.git\
+    && pip3 install git+https://github.com/openagua/hydra-base.git \
+    && pip3 install git+https://github.com/openagua/hydra-client-python.git \
     && pip3 install $(grep -ivE "winpath" requirements.txt) \
     && apt-get purge -y --auto-remove gcc git \
     && apt-get purge -y --auto-remove libffi-dev libpq-dev default-libmysqlclient-dev
