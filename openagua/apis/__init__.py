@@ -43,9 +43,9 @@ api = Api(
     version='0.1',
     title='OpenAgua API',
     description='A mostly RESTful API for OpenAgua.',
-    contact_email='david.rheinheimer@tec.mx',
+    contact_email='dev@openagua.org',
     default='Core API',
-    default_label='The main API of interest to most people. Built on the Hydra Platform API.',
+    default_label='The main API of interest to most people, derived from Hydra Platform.',
 )
 api.add_namespace(hydra_ns)
 api.add_namespace(data_ns)
@@ -85,8 +85,13 @@ def before_api0_requests():
 def before_api_requests():
     if request.method == 'OPTIONS':  # pre-flight request
         return
+    if request.endpoint in ['api.doc', 'api.specs']:
+        return
     args = request.args
-    body = request.get_json() or {}
+    try:
+        body = request.json
+    except:
+        body = {}
     form = request.form
     g.dataurl_id = args.get('sourceId', type=int) or body.get('sourceId') or form.get('sourceId') or 1
     g.project_id = args.get('projectId', type=int) or body.get('projectId')
