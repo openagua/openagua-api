@@ -389,3 +389,4 @@ def upload_template(conn, zf, tpl_name):
     template = conn.call('upload_template_xml', new_xml)
 
     return template
+
