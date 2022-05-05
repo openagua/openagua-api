@@ -10,4 +10,4 @@ if __name__ == '__main__':
     port = os.environ.get('OA_PORT', 5000)
     print("Running OpenAgua on {}:{}".format(host, port))
 
-    socketio.run(app, host=host, port=5000)
+    socketio.run(app, host=host, port=port)

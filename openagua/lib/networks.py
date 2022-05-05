@@ -4,7 +4,7 @@ import requests
 from datetime import datetime
 import svgwrite
 import numpy
-from attrdict import AttrDict
+from munch import Munch as AttrDict
 from boltons.iterutils import remap
 from flask import current_app, g
 import io

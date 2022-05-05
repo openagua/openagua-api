@@ -1,5 +1,5 @@
 import io
-from attrdict import AttrDict
+from munch import Munch as AttrDict
 
 
 def readfromzip(zf, subdir, path):

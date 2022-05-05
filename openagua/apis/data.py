@@ -1,6 +1,6 @@
 from flask import request, jsonify, g, current_app, json
 from flask_restx import Namespace, Resource
-from attrdict import AttrDict
+from munch import Munch as AttrDict
 
 from openagua.security import current_user
 from openagua.lib.data import get_scenarios_data, make_eval_data, filter_input_data, prepare_dataset, \

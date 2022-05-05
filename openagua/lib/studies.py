@@ -1,5 +1,5 @@
 from flask import g, json
-from attrdict import AttrDict
+from munch import Munch as AttrDict
 
 from openagua.models import Study, Star
 from openagua.security import current_user

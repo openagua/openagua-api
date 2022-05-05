@@ -3,7 +3,7 @@ from os.path import splitext
 
 from flask import current_app, jsonify, g, request, send_file, make_response
 from flask_restx import Resource, fields
-from attrdict import AttrDict
+from munch import Munch as AttrDict
 
 from openagua.security import login_required, current_user
 from openagua.lib.networks import get_network, update_network_on_mapbox, update_types, get_network_for_export, \

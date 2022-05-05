@@ -5,7 +5,7 @@ from sqlalchemy.dialects.mysql import LONGTEXT
 import jwt
 import datetime
 
-from attrdict import AttrDict
+from munch import Munch as AttrDict
 import json
 
 from sqlalchemy_json import mutable_json_type

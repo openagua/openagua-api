@@ -1,6 +1,6 @@
 from flask import g
 from boltons.iterutils import remap
-from attrdict import AttrDict
+from munch import Munch as AttrDict
 
 
 def prepare_template_for_import(template, internal=True):

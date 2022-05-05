@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 import numpy as np
-from attrdict import AttrDict
+from munch import Munch as AttrDict
 
 from flask import g
 

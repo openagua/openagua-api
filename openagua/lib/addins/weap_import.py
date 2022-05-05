@@ -10,7 +10,7 @@ from ast import literal_eval
 import re
 import pandas
 import shapefile
-from attrdict import AttrDict
+from munch import Munch as AttrDict
 from pypxlib import Table
 
 from flask import current_app, url_for

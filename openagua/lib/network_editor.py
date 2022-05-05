@@ -1,6 +1,6 @@
 import json
 from copy import deepcopy
-from attrdict import AttrDict
+from munch import Munch as AttrDict
 
 from flask import current_app
 

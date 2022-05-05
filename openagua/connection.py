@@ -1,5 +1,5 @@
 from flask import current_app as app
-from attrdict import AttrDict
+from munch import Munch as AttrDict
 
 import hydra_base as hb
 from hydra_base.lib import objects

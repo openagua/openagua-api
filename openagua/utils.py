@@ -2,7 +2,7 @@ import socket
 from datetime import datetime
 import json
 from cryptography.fernet import Fernet
-from attrdict import AttrDict
+from munch import Munch as AttrDict
 import xml.etree.ElementTree as ET
 from flask import g
 
@@ -389,3 +389,4 @@ def upload_template(conn, zf, tpl_name):
     template = conn.call('upload_template_xml', new_xml)
 
     return template
+

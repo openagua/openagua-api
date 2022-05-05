@@ -49,6 +49,7 @@ class Config(object):
     PUBNUB_SECRET_KEY = os.environ.get('PUBNUB_SECRET_KEY')
     PUBNUB_SUBSCRIBE_KEY = os.environ.get('PUBNUB_SUBSCRIBE_KEY')
     PUBNUB_PUBLISH_KEY = os.environ.get('PUBNUB_PUBLISH_KEY')
+    PUBNUB_UUID = os.environ.get('PUBNUB_UUID')
 
     AWS_MODEL_KEY_NAME = os.environ.get('AWS_MODEL_KEY_NAME')  # .pem key file used by OpenAgua for EC2 modeling
 
