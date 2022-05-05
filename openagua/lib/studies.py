@@ -1,5 +1,5 @@
 from flask import g, json
-from attrdict import AttrDict
+from munch import Munch
 
 from openagua.models import Study, Star
 from openagua.security import current_user
@@ -112,9 +112,9 @@ def load_active_study(dataurl_id=None, project_id=None):
     else:
         g.datauser = None
     if g.study and type(g.study.settings) is str:
-        g.study_settings = AttrDict(json.loads(g.study.settings))
+        g.study_settings = Munch(json.loads(g.study.settings))
     else:
-        g.study_settings = AttrDict({})
+        g.study_settings = Munch({})
 
 
 def add_default_project(conn, user):

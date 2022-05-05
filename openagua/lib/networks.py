@@ -4,7 +4,7 @@ import requests
 from datetime import datetime
 import svgwrite
 import numpy
-from attrdict import AttrDict
+from munch import Munch
 from boltons.iterutils import remap
 from flask import current_app, g
 import io
@@ -591,7 +591,7 @@ def make_network_thumbnail(network, template):
         for resource in network[res_type]:
             if not resource.layout.get('exists', True):
                 continue
-            gj = AttrDict(resource.layout.get('geojson', {}))
+            gj = Munch(resource.layout.get('geojson', {}))
             extras = {}
             rt = None
             resource_class = 'undefined'
@@ -672,7 +672,7 @@ def add_links_from_geojson(conn, network, template, gj, existings):
         if i:
             new_coords.append((x, y))
 
-        existing = AttrDict(existings[str(i)])
+        existing = Munch(existings[str(i)])
 
         node_type = None
         node_name = ''

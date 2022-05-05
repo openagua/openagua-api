@@ -10,7 +10,7 @@ from ast import literal_eval
 import re
 import pandas
 import shapefile
-from attrdict import AttrDict
+from munch import Munch
 from pypxlib import Table
 
 from flask import current_app, url_for
@@ -630,7 +630,7 @@ class WEAPArea:
     def load(self, filename):
 
         def row_to_dict(row, keys):
-            return AttrDict({key: row.__getattr__(key) for key in keys if row.__getattr__(key)})
+            return Munch({key: row.__getattr__(key) for key in keys if row.__getattr__(key)})
 
         # Areadata
         with self.db('Areadata') as table:

@@ -3,7 +3,7 @@ from os.path import splitext
 
 from flask import current_app, jsonify, g, request, send_file, make_response
 from flask_restx import Resource, fields
-from attrdict import AttrDict
+from munch import Munch
 
 from openagua.security import login_required, current_user
 from openagua.lib.networks import get_network, update_network_on_mapbox, update_types, get_network_for_export, \
@@ -338,7 +338,7 @@ class ReferenceLayers(Resource):
                 update_network_reference(network, geojson, filename='{}.json'.format(reference['id']))
 
         refs = [ref for ref in network.layout.get('refs', []) if
-                type(ref) in [dict, AttrDict] and ref.get('id') not in updatedIds]
+                type(ref) in [dict, Munch] and ref.get('id') not in updatedIds]
         refs.extend(updated)
         network['layout']['refs'] = refs
         g.conn.call('update_network', network)

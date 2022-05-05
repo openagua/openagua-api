@@ -1,6 +1,6 @@
 from flask import g
 from boltons.iterutils import remap
-from attrdict import AttrDict
+from munch import Munch
 
 
 def prepare_template_for_import(template, internal=True):
@@ -87,4 +87,4 @@ def get_default_types(template, mapping=None):
             templatetypes = [tt for tt in template['templatetypes'] if tt['name'] == default_name]
             if templatetypes:
                 default_types[key] = templatetypes[0]
-    return AttrDict(default_types)
+    return Munch(default_types)
