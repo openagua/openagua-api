@@ -7,7 +7,7 @@ from openagua.lib.studies import load_active_study
 
 def get_value_from_request(key, dtype=int, default=None):
     args = request.args
-    body = request.json if request.method in ['POST', 'PUT', 'PATCH'] else {}
+    body = request.get_json() if request.is_json else {}
     form = request.form
     return args.get(key, type=dtype) or body.get(key) or form.get(key, type=dtype) or default
 
