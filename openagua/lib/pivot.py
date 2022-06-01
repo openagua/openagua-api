@@ -11,13 +11,13 @@ NULL_VALUES = {
 }
 
 
-def save_pivot_input(setup, filters, data, network, template, data_date_format):
-    setup = AttrDict(setup)
+def save_pivot_input(pivot, filters, data, network, template, data_date_format):
+    pivot = AttrDict(pivot)
 
     error = 0
 
     # attributes
-    pfilters = setup.rows + setup.cols
+    pfilters = pivot.rows + pivot.cols
 
     # for now, this is a requirement
     if not {'Scenario', 'Feature', 'Variable'}.issubset(pfilters):
@@ -40,18 +40,18 @@ def save_pivot_input(setup, filters, data, network, template, data_date_format):
         dtype = str
     else:
         dtype = object
-    df = hot_to_pd(data, setup['cols'], setup['rows'], dtype)
+    df = hot_to_pd(data, pivot['cols'], pivot['rows'], dtype)
 
-    # inclusions = setup['inclusions'] # unclear why this was here
+    # inclusions = pivot['inclusions'] # unclear why this was here
     colnames = df.columns.names
     rownames = df.index.names
 
     def get_items(class_name):
-        if class_name in setup.cols:
+        if class_name in pivot.cols:
             return set(df.columns.levels[colnames.index(class_name)])
-        elif class_name in setup.rows:
-            idx = setup.rows.index(class_name)
-            return set(data[len(setup.cols) + 1:, idx])
+        elif class_name in pivot.rows:
+            idx = pivot.rows.index(class_name)
+            return set(data[len(pivot.cols) + 1:, idx])
 
     scenario_names = get_items('Scenario')
     attr_names = get_items('Variable')
@@ -118,9 +118,9 @@ def save_pivot_input(setup, filters, data, network, template, data_date_format):
             # reshape dataframe
             dtvars = ['Date']
             for x in dtvars:
-                if x in setup.cols:
+                if x in pivot.cols:
                     df = df.stack(x)
-            for x in setup.rows:
+            for x in pivot.rows:
                 if x not in dtvars:
                     df = df.unstack(x)
             df.dropna(axis=0, inplace=True)

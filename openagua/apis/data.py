@@ -201,13 +201,13 @@ class PivotInputData(Resource):
         if favorite_id:
             favorite = get_favorite(favorite_id=favorite_id)
             if favorite:
-                filters = AttrDict(json.loads(favorite.filters))
-                setup = json.loads(favorite.setup)
+                filters = favorite.filters
+                pivot = favorite.pivot
             else:
                 return jsonify(error=1)  # no favorite found
         else:
             filters = json.loads(request.args.get('filters'))
-            setup = {'aggregatorName': 'Unique Values'}  # renderer is defined in Utilities.js
+            pivot = {'aggregatorName': 'Unique Values'}  # renderer is defined in Utilities.js
 
             input_method = filters.get('input_method')
 
@@ -215,14 +215,14 @@ class PivotInputData(Resource):
 
             if input_method == 'native':
                 if data_type == 'timeseries':  # TODO: add more types
-                    setup['cols'] = ['Scenario', 'Feature type', 'Feature', 'Variable']
-                    setup['rows'] = ['Date']  # TODO: customize according to the model timestep
+                    pivot['cols'] = ['Scenario', 'Feature type', 'Feature', 'Variable']
+                    pivot['rows'] = ['Date']  # TODO: customize according to the model timestep
                 if data_type in ['scalar', 'descriptor']:  # TODO: add more types
-                    setup['cols'] = ['Scenario', 'Variable']
-                    setup['rows'] = ['Feature type', 'Feature']  # TODO: customize according to the model timestep
+                    pivot['cols'] = ['Scenario', 'Variable']
+                    pivot['rows'] = ['Feature type', 'Feature']  # TODO: customize according to the model timestep
             else:
-                setup['cols'] = ['Scenario', 'Variable']
-                setup['rows'] = ['Feature type', 'Feature']
+                pivot['cols'] = ['Scenario', 'Variable']
+                pivot['rows'] = ['Feature type', 'Feature']
 
         # filter and organize the data
         result = filter_input_data(
@@ -235,21 +235,21 @@ class PivotInputData(Resource):
 
         if not favorite_id:
             if 'Block' in result:
-                blocks = result.Block.unique()
+                blocks = result['Block'].unique()
                 if not (len(blocks) == 1 and blocks[0] == 'None'):
-                    setup['cols'].append('Block')
-            setup['vals'] = ['value']
+                    pivot['cols'].append('Block')
+            pivot['vals'] = ['value']
 
-        setup['hiddenFromAggregators'] = [c for c in result.columns if c != 'value']
+        pivot['hiddenFromAggregators'] = [c for c in result['columns'] if c != 'value']
 
         data = result.to_dict(orient='records')
 
-        return jsonify(data=data, setup=setup)
+        return jsonify(data=data, pivot=pivot)
 
     def put(self):
         error = 0
         network_id = request.json.get('network_id')
-        setup = request.json.get('setup')
+        pivot = request.json.get('pivot')
         filters = request.json.get('filters')
         data = request.json.get('data')
 
@@ -257,7 +257,7 @@ class PivotInputData(Resource):
                               summary=False)
         template = g.conn.call('get_template', network.layout.get('active_template_id'))
 
-        error = save_pivot_input(setup, filters, data, network, template, current_app.config['DATA_DATETIME_FORMAT'])
+        error = save_pivot_input(pivot, filters, data, network, template, current_app.config['DATA_DATETIME_FORMAT'])
 
         return jsonify(error=error)
 
@@ -293,12 +293,12 @@ class PivotResultsData(Resource):
         if favorite_id:
             favorite = get_favorite(favorite_id=favorite_id)
             if favorite:
-                setup = json.loads(favorite.setup)
+                pivot = favorite.pivot
             else:
                 return jsonify(error=1)  # no favorite found
         else:
             default_chart_renderer = current_app.config['DEFAULT_CHART_RENDERER']
-            setup = {
+            pivot = {
                 'renderer': default_chart_renderer,
                 'rendererName': 'Line Chart',
                 'aggregatorName': 'Average',
@@ -310,26 +310,26 @@ class PivotResultsData(Resource):
             time_step = agg.get('time', {}).get('step')
             if len(filters.get('scenarios', [])) > 1 or time_step == 'year':
                 if len(set(data.scenario_id)) > 1:
-                    setup['rows'].append('Scenario')
+                    pivot['rows'].append('Scenario')
 
             if data_type == 'timeseries':  # TODO: add more types
-                setup['renderer'] = default_chart_renderer,
+                pivot['renderer'] = default_chart_renderer,
                 if not agg.get('space'):
-                    setup['rows'].append('Feature')
+                    pivot['rows'].append('Feature')
                 if not filters.get('unstack'):
-                    setup['rows'].append('Variable')
+                    pivot['rows'].append('Variable')
                 if 'block' in data and len(set(data.block)) > 1:
-                    setup['rows'].append('Block')
+                    pivot['rows'].append('Block')
 
                 if time_step == 'year':
-                    setup['cols'] = ['Year']
+                    pivot['cols'] = ['Year']
                 else:
-                    setup['cols'] = ['Date']
+                    pivot['cols'] = ['Date']
 
             if perturbations:
-                setup['rows'].extend(perturbations)
+                pivot['rows'].extend(perturbations)
 
         columns = list(data.columns)
         data = data.to_json(orient='values', date_format='iso')
 
-        return jsonify(columns=columns, values=data, setup=setup, error=None)
+        return jsonify(columns=columns, values=data, pivot=pivot, error=None)

@@ -6,14 +6,15 @@ from openagua import db
 
 # favorites
 
-def add_favorite(study_id, name, description, thumbnail, filters, setup, content):
+def add_favorite(study_id, name, description, type, thumbnail, filters, pivot, content):
     favorite = Favorite()
     favorite.study_id = study_id
     favorite.name = name
     favorite.description = description
+    favorite.type = type
     favorite.thumbnail = thumbnail
     favorite.filters = filters
-    favorite.setup = setup
+    favorite.pivot = pivot
     favorite.content = content
 
     db.session.add(favorite)
@@ -38,8 +39,10 @@ def add_update_favorite(study_id=None, network_id=None, favorite_id=None, favori
     f.name = favorite.get('name')
     f.description = favorite.get('description')
     f.thumbnail = favorite.get('thumbnail', '')
-    f.filters = json.dumps(favorite.get('filters', {}))
-    f.setup = json.dumps(favorite.get('setup', {}))
+    f.type = favorite.get('type')
+    f.filters = favorite.get('filters', {})
+    f.pivot = favorite.get('pivot', {})
+    f.analytics = favorite.get('analytics', {})
     content = favorite.get('content', '')
     if type(content) is not str:
         content = json.dumps(content)

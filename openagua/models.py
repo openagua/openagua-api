@@ -229,15 +229,13 @@ class Favorite(db.Model):
     filters = db.Column(db.JSON())
     pivot = db.Column(db.JSON())
     analytics = db.Column(db.JSON())
-    content = db.Column(LONGTEXT, nullable=True)
+    content = db.Column(db.JSON())
 
     def to_json(self):
         j = {}
         for c in self.__table__.columns:
             j[c.name] = getattr(self, c.name)
-            if c.name == 'content':
-                j[c.name] = json.loads(j.get(c.name) or '{}')
-            elif c.name in ['filters', 'pivot', 'analytics']:
+            if c.name in ['content', 'filters', 'pivot', 'analytics']:
                 j[c.name] = j.get(c.name) or {}
 
         return j
