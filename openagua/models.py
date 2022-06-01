@@ -226,8 +226,9 @@ class Favorite(db.Model):
     network_id = db.Column(db.Integer())
     name = db.Column(db.String(80))
     description = db.Column(db.String(255), server_default='')
-    filters = db.Column(db.Text())
-    setup = db.Column(db.Text())
+    filters = db.Column(db.JSON())
+    pivot = db.Column(db.JSON())
+    analytics = db.Column(db.JSON())
     content = db.Column(LONGTEXT, nullable=True)
 
     def to_json(self):
@@ -236,8 +237,8 @@ class Favorite(db.Model):
             j[c.name] = getattr(self, c.name)
             if c.name == 'content':
                 j[c.name] = json.loads(j.get(c.name) or '{}')
-            elif c.name in ['filters', 'setup']:
-                j[c.name] = json.loads(j.get(c.name) or '{}')
+            elif c.name in ['filters', 'pivot', 'analytics']:
+                j[c.name] = j.get(c.name) or {}
 
         return j
 

@@ -22,7 +22,8 @@ from pubnub.pubnub import PubNub
 # create the app
 app = Flask(__name__, instance_relative_config=True)
 
-allowed_origin = app.config['OA_AUTH_ORIGIN'] = os.environ.get('OA_AUTH_ORIGIN')
+allowed_origin = os.environ.get('OA_AUTH_ORIGIN')
+app.config['OA_AUTH_ORIGIN'] = allowed_origin
 
 cors_resources = {
     r"/api/*": {"origins": "*"},
