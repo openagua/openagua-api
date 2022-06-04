@@ -226,6 +226,8 @@ class Favorite(db.Model):
     network_id = db.Column(db.Integer())
     name = db.Column(db.String(80))
     description = db.Column(db.String(255), server_default='')
+    provider = db.Column(db.String(16))
+    type = db.Column(db.String(16))
     filters = db.Column(db.JSON())
     pivot = db.Column(db.JSON())
     analytics = db.Column(db.JSON())

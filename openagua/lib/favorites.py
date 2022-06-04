@@ -40,13 +40,11 @@ def add_update_favorite(study_id=None, network_id=None, favorite_id=None, favori
     f.description = favorite.get('description')
     f.thumbnail = favorite.get('thumbnail', '')
     f.type = favorite.get('type')
-    f.filters = favorite.get('filters', {})
-    f.pivot = favorite.get('pivot', {})
-    f.analytics = favorite.get('analytics', {})
-    content = favorite.get('content', '')
-    if type(content) is not str:
-        content = json.dumps(content)
-    f.content = content
+    f.filters = favorite.get('filters')
+    f.pivot = favorite.get('pivot')
+    f.analytics = favorite.get('analytics')
+    f.content = favorite.get('content')
+    f.provider = favorite.get('provider')
 
     if not favorite_id:
         db.session.add(f)
