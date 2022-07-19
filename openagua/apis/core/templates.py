@@ -97,7 +97,7 @@ class Templates(Resource):
 class Template(Resource):
     def get(self, template_id):
         template = g.conn.call('get_template', template_id)
-        return jsonify(template=template)
+        return jsonify(template)
 
     def put(self, template_id):
         template = request.json['template']

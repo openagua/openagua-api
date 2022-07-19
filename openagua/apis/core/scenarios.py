@@ -20,7 +20,7 @@ class Scenarios(Resource):
         else:
             scenario = g.conn.call('add_scenario', network_id, incoming_scenario, return_summary=True)
 
-        return jsonify(scenario=scenario)
+        return jsonify(scenario)
 
     def put(self):
         scenarios = request.json.get('scenarios')
@@ -37,13 +37,13 @@ class Scenario(Resource):
     def get(self, scenario_id):
         include_data = request.args.get('include_data') in ['1', 'True', 'true']
         scenario = g.conn.call('get_scenario', scenario_id, include_data=include_data)
-        return jsonify(scenario=scenario)
+        return jsonify(scenario)
 
     def put(self, scenario_id):
         return_summary = request.args.get('return_summary', 'true') == 'true'
         scenario = request.json['scenario']
         scenario = g.conn.call('update_scenario', scenario)
-        return jsonify(scenario=scenario)
+        return jsonify(scenario)
 
     def delete(self, scenario_id):
         scenario_class = request.args.get('scenario_class', 'input')
@@ -67,7 +67,7 @@ class ResourceGroupItems(Resource):
         result = g.conn.call('update_scenario', scen=scenario)
         ret_items = result.resourcegroupitems[-len(items):]
 
-        return jsonify(items=ret_items)
+        return jsonify(ret_items)
 
     def delete(self, scenario_id):
         item_ids = request.args.getlist('ids[]', type=int)

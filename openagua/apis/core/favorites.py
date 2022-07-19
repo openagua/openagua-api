@@ -30,7 +30,7 @@ class Favorites(Resource):
         all_favorites = get_favorites(dataurl_id=dataurl_id, study_id=study_id, project_id=project_id,
                                       network_id=network_id)
         validated_favorites = validate_favorites(conn=g.conn, network_id=network_id, favorites=all_favorites)
-        return jsonify(favorites=validated_favorites)
+        return jsonify(validated_favorites)
 
     @api.doc(description='Add a favorite', body=favorite_fields)
     def post(self):
@@ -44,7 +44,7 @@ class Favorites(Resource):
 
         ret = add_update_favorite(study_id=study_id, network_id=network_id, favorite=favorite)
 
-        return jsonify(favorite=ret.to_json())
+        return jsonify(ret.to_json())
 
 
 @api.route('/favorites/<int:favorite_id>')
@@ -58,7 +58,7 @@ class Favorite(Resource):
 
         ret = add_update_favorite(study_id=study_id, favorite_id=favorite_id, favorite=favorite)
 
-        return jsonify(favorite=ret.to_json())
+        return jsonify(ret.to_json())
 
     @api.doc(description='Delete a favorite')
     def delete(self, favorite_id):

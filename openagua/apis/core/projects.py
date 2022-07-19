@@ -15,7 +15,7 @@ from flask_restx import Resource
 @api.route('/projects')
 class Projects(Resource):
 
-    @api.doc(params={'public': 'If true, all public projects will be returned.'})
+    @api.doc(params={'is_public': 'If true, all public projects will be returned.'})
     def get(self):
 
         source_id = g.source_id
@@ -32,7 +32,6 @@ class Projects(Resource):
         include_networks = request.args.get('include_networks') == 'true'
         search = request.args.get('search')
 
-        projects_count = g.conn.call('get_public_projects_count', search=search) if page == 1 else None
         projects = g.conn.call('get_projects', user_id, user_id=user_id, summary=True, page=page,
                                public_only=is_public, search=search,
                                max_per_page=max_per_page, include_networks=include_networks)
@@ -40,11 +39,11 @@ class Projects(Resource):
         if projects is None:
             return '', 511
         if 'error' in projects:
-            return jsonify(projects=[])
+            return jsonify([])
 
         projects = prepare_projects_for_client(g.conn, projects, source_id, user_id, include_models=True)
 
-        return jsonify(projects=projects, count=projects_count)
+        return jsonify(projects)
 
     @api.doc(description='Add a project.')
     def post(self):
@@ -54,7 +53,6 @@ class Projects(Resource):
             proj = copy_project(project)
         else:
             proj = g.conn.call('add_project', project)
-
 
         if 'error' in proj:
             return jsonify(proj)
@@ -71,7 +69,16 @@ class Projects(Resource):
         note = {'ref_key': 'PROJECT', 'ref_id': project.id, 'value': b''}
         g.conn.call('add_note', note)
 
-        return jsonify(project=project)
+        return jsonify(project)
+
+
+@api.route('/projects/count')
+class ProjectsCount(Resource):
+    def get(self):
+        page = request.args.get('page', type=int)
+        search = request.args.get('search')
+        projects_count = g.conn.call('get_public_projects_count', search=search) if page == 1 else None
+        return jsonify(projects_count)
 
 
 @api.route('/projects/<int:project_id>')
@@ -95,7 +102,7 @@ class Project(Resource):
         project = prepare_project_for_client(g.conn, project, source_id, source_user_id, data_url=source_url,
                                              include_models=True)
 
-        return jsonify(project=project)
+        return jsonify(project)
 
     @api.doc('Update a project.')
     def put(self, project_id):
@@ -153,7 +160,7 @@ class ProjectNotes(Resource):
             except:
                 print('Something went wrong processing note: ')
                 print(note)
-        return jsonify(notes=notes)
+        return jsonify(notes)
 
     @api.doc(description='Add a note to a project.')
     @api.response(200, 'Success')
@@ -164,7 +171,7 @@ class ProjectNotes(Resource):
         note['ref_id'] = project_id
         note = g.conn.call('add_note', note)
         note['value'] = note.get('value').decode()
-        return jsonify(note=note)
+        return jsonify(note)
 
 
 @api.route('/projects/<int:project_id>/notes/<int:note_id>')
@@ -178,7 +185,7 @@ class ProjectNote(Resource):
         note['ref_id'] = project_id
         note = g.conn.call('update_note', note)
         note['value'] = note.get('value', b'').decode()
-        return jsonify(note=note)
+        return jsonify(note)
 
 
 @api.route('/projects/<int:project_id>/permissions')
@@ -235,7 +242,7 @@ class ProjectsStars(Resource):
     @api.response(200, 'Success')
     def get(self):
         stars = get_stars(user_id=current_user.id)
-        return jsonify(stars=stars)
+        return jsonify(stars)
 
 # @api.route('/hydroshare/import')
 # @login_required

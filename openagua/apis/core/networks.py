@@ -38,7 +38,7 @@ class Networks(Resource):
                                   include_data=False)
             networks.append(network)
 
-        return jsonify(networks=networks)
+        return jsonify(networks)
 
     @api.doc(description='Add a network.')
     @api.param('purpose',
@@ -72,13 +72,13 @@ class Networks(Resource):
                 else:
                     network, template = import_from_json(conn=g.conn, file=file, project_id=project_id)
 
-            return jsonify(network=network)
+            return jsonify(network)
 
         if purpose == 'clone':
             options = request.json.get('options')
             network_id = request.json.get('network_id')
             network = clone_network(conn=g.conn, network_id=network_id, **options)
-            return jsonify(network=network)
+            return jsonify(network)
 
         if purpose == 'move':
             source = request.json.get('source')
@@ -96,7 +96,7 @@ class Networks(Resource):
         #     network['scenarios'] = [scenario]
         # else:
         #     network['scenarios'] = network.get('scenarios', [])
-        return jsonify(network=network)
+        return jsonify(network)
 
 
 @api.route('/networks/<int:network_id>')
@@ -131,7 +131,7 @@ class Network(Resource):
         elif 'error' in network:
             return make_response(jsonify(network), 403)
 
-        return jsonify(network=network)
+        return jsonify(network)
 
     @api.doc(description='Patch a network')
     def patch(self, network_id):
@@ -284,7 +284,7 @@ class NetworkPreviewUrl(Resource):
             location=current_app.config['NETWORK_FILES_STORAGE_LOCATION'],
             s3=current_app.s3
         )
-        return jsonify(url=url)
+        return jsonify(url)
 
 
 @api.route('/networks/<int:network_id>/reference_layers')
@@ -311,7 +311,7 @@ class ReferenceLayers(Resource):
             return 'success', 200
 
         else:
-            return jsonify(reference=reference)
+            return jsonify(reference)
 
     def put(self, network_id):
         references = request.json.get('references')
@@ -524,7 +524,7 @@ class Node(Resource):
             g.conn.call('delete_link', down_link_id, True)
             g.conn.call('delete_node', node_id, True)
 
-            return jsonify(new_link=new_link)
+            return jsonify(new_link)
 
 
 links_fields = api.model('Links', {
@@ -672,7 +672,7 @@ class ResourceGroups(Resource):
         network_id = request.args.get('network_id')
         group = request.json.get('group')
         rg = g.conn.call('add_resourcegroup', group, network_id)
-        return jsonify(group=rg)
+        return jsonify(rg)
 
 
 @api.route('/resource_groups/<int:group_id>')
@@ -682,7 +682,7 @@ class ResourceGroup(Resource):
     def put(self, group_id):
         group = request.json.get('group')
         rg = g.conn.call('update_resourcegroup', group=group)
-        return jsonify(group=rg)
+        return jsonify(rg)
 
 
 @api.route('/resource_attributes')
@@ -744,7 +744,7 @@ class ResourceAttributes(Resource):
             group_attr = g.conn.call('add_group_attribute', group_id=group.id, attr_id=res_attr.id, is_var=is_var)
             res_attr['group_id'] = group.id
 
-        return jsonify(res_attr=res_attr)
+        return jsonify(res_attr)
 
 
 @api.route('/resource_attribute/<int:res_attr_id>')

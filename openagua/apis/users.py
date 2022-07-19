@@ -12,7 +12,7 @@ from openagua.apis import api0, api
 @api0.route('/roles')
 def get_roles():
     roles = g.conn.call('get_all_roles')
-    return jsonify(roles=roles)
+    return jsonify(roles)
 
 
 @api.route('/users/<int:user_id>')
@@ -26,7 +26,7 @@ class UserValidation(Resource):
         user = User.query.filter_by(id=user_id).first()
         ret_user = user.to_json()
         ret_user['id'] = user_id
-        return jsonify(user=ret_user)
+        return jsonify(ret_user)
 
 
 @api.route('/users/<int:user_id>/sources')
@@ -43,7 +43,7 @@ class Sources(Resource):
             except:
                 continue
 
-        return jsonify(sources=sources)
+        return jsonify(sources)
 
 
 @api.route('/users/<int:user_id>/setting/<string:key>')
@@ -51,7 +51,7 @@ class Setting(Resource):
 
     def get(self, user_id, key):
         user_setting = get_user_setting(user_id, key)
-        return jsonify(setting=user_setting)
+        return jsonify(user_setting)
 
     def post(self, user_id, key):
         user_setting = get_user_setting(user_id, key)
