@@ -24,8 +24,12 @@ class Templates(Resource):
         project_id = request.args.get('project_id', 0, type=int)
         template_ids = request.args.getlist('template_ids[]', type=int)
         load_all = request.args.get('load_all', 'true') == 'true'
+        ownership = request.args.get('ownership')
+
         templates = []
         project_template_ids = []
+
+        user_id = g.datauser.userid
 
         if project_id or template_ids:
             if project_id:
@@ -53,19 +57,19 @@ class Templates(Resource):
                     print('Something went wrong processing template: ')
                     print(template)
 
-        else:
-            templates = g.conn.call('get_templates', uid=g.conn.user_id, load_all=load_all)
-
-            if g.is_public_user and request.args.get('exclude_user') == 'true':
-                user_id = g.datauser.userid
+        elif g.is_public_user:
+            templates = g.conn.call('get_templates', uid=g.conn.user_id, public_only=True, load_all=load_all)
+            if request.args.get('exclude_user') == 'true':
                 templates = [t for t in templates if not any(o for o in t['owners'] if o['user_id'] == user_id)]
 
-            elif request.args.get('exclude_public') == 'true':
-                public_conn = root_connection()
-                root_id = public_conn.user_id
-                templates = [t for t in templates if not any(o for o in t['owners'] if o['user_id'] == root_id)]
+        else:
+            templates = g.conn.call('get_templates', uid=g.conn.user_id, load_all=load_all)
+            if request.args.get('exclude_public') == 'true':
+                templates = [t for t in templates if not t['is_public']]
+            if ownership == 'shared':
+                templates = [t for t in templates if not t['created_by'] == user_id]
 
-        return jsonify(templates=templates)
+        return jsonify(templates)
 
     def post(self):
         file = request.files.get('file')
