@@ -69,8 +69,6 @@ googleapis-common-protos==1.56.0
 greenlet==1.1.2
 httplib2==0.20.4
 httplib2shim==0.0.3
-hydra-base @ file:///C:/Users/drheinheimer/Documents/GitHub/hydra-base
-hydra-client-python @ file:///C:/Users/drheinheimer/Documents/GitHub/hydra-client-python
 idna==3.3
 iso3166==2.0.2
 itsdangerous==2.1.2
