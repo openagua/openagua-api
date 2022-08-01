@@ -7,7 +7,9 @@ from openagua.apis import api
 
 @api.route('/scenarios')
 class Scenarios(Resource):
-    def post(self):
+
+    @staticmethod
+    def post():
         incoming_scenario = request.json['scenario']
         network_id = request.json.get('network_id')
         incoming_scenario['network_id'] = network_id
@@ -22,7 +24,8 @@ class Scenarios(Resource):
 
         return jsonify(scenario)
 
-    def put(self):
+    @staticmethod
+    def put():
         scenarios = request.json.get('scenarios')
         for scenario in scenarios:
             g.conn.call('update_scenario', scenario)
@@ -33,8 +36,9 @@ class Scenarios(Resource):
 @api.route('/scenarios/<int:scenario_id>')
 class Scenario(Resource):
 
+    @staticmethod
     @api.doc(description='Get a scenario.')
-    def get(self, scenario_id):
+    def get(scenario_id):
         include_data = request.args.get('include_data') in ['1', 'True', 'true']
         scenario = g.conn.call('get_scenario', scenario_id, include_data=include_data)
         return jsonify(scenario)
@@ -70,7 +74,8 @@ class Scenario(Resource):
 @api.route('/scenarios/<int:scenario_id>/resource_group_items')
 class ResourceGroupItems(Resource):
 
-    def post(self, scenario_id):
+    @staticmethod
+    def post(scenario_id):
         items = request.json.get('items')
         scenario = g.conn.call('get_scenario', scenario_id)
         scenario['resourcegroupitems'] = items
@@ -79,7 +84,8 @@ class ResourceGroupItems(Resource):
 
         return jsonify(ret_items)
 
-    def delete(self, scenario_id):
+    @staticmethod
+    def delete(scenario_id):
         item_ids = request.args.getlist('ids[]', type=int)
         for item_id in item_ids:
             g.conn.call('delete_resourcegroupitem', item_id=item_id)
