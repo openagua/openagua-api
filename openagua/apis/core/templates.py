@@ -3,7 +3,6 @@ from flask_restx import Resource
 
 from pathlib import Path
 
-from openagua.connection import root_connection
 from openagua.lib.templates import add_template, clean_template, prepare_template_for_import
 
 from openagua.apis import api

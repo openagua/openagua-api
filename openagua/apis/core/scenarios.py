@@ -39,13 +39,23 @@ class Scenario(Resource):
         scenario = g.conn.call('get_scenario', scenario_id, include_data=include_data)
         return jsonify(scenario)
 
-    def put(self, scenario_id):
+    @staticmethod
+    def put(scenario_id):
         return_summary = request.args.get('return_summary', 'true') == 'true'
         scenario = request.json['scenario']
         scenario = g.conn.call('update_scenario', scenario)
         return jsonify(scenario)
 
-    def delete(self, scenario_id):
+    @staticmethod
+    def patch(scenario_id):
+        updates = request.json
+        scenario = g.conn.call('get_scenario', scenario_id)
+        scenario.update(updates)
+        scenario = g.conn.call('update_scenario', scenario)
+        return jsonify(scenario)
+
+    @staticmethod
+    def delete(scenario_id):
         scenario_class = request.args.get('scenario_class', 'input')
 
         if scenario_class == 'result':
