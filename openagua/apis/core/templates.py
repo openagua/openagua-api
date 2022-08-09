@@ -79,7 +79,7 @@ class Templates(Resource):
                 template = json.loads(content.decode("utf-8-sig"))
                 template = clean_template(template=template)
                 template = add_template(template)
-                return jsonify(template=template)
+                return jsonify(template)
             else:
                 return 'Unsupported media type', 415
 
@@ -93,7 +93,7 @@ class Templates(Resource):
             else:
                 cleaned = prepare_template_for_import(template, internal=True)
             template = add_template(cleaned)
-            return jsonify(template=template)
+            return jsonify(template)
 
 
 @api.route('/templates/<int:template_id>')
@@ -105,7 +105,7 @@ class Template(Resource):
     def put(self, template_id):
         template = request.json['template']
         updated = g.conn.call('update_template', template)
-        return jsonify(template=updated)
+        return jsonify(updated)
 
     def patch(self, template_id):
         updates = request.json
@@ -133,7 +133,7 @@ class TemplateTypes(Resource):
     def post(self):
         templatetype = request.json['templatetype']
         ttype = g.conn.call('add_templatetype', templatetype)
-        return jsonify(templatetype=ttype)
+        return jsonify(ttype)
 
 
 @api.route('/templatetypes/<int:template_type_id>')
@@ -166,7 +166,7 @@ class TypeAttrs(Resource):
         tattr['attr_id'] = attr.id
         ret_tattr = g.conn.call('add_typeattr', dict(tattr))
         ret_tattr['attr'] = attr
-        return jsonify(tattr=ret_tattr)
+        return jsonify(ret_tattr)
 
 
 @api.route('/typeattrs/<int:typeattr_id>')
@@ -200,7 +200,7 @@ class TypeAttr(Resource):
 
         ret['attr'] = attr
 
-        return jsonify(tattr=ret)
+        return jsonify(ret)
 
     @api.doc(description='Delete a template type attribute.')
     def delete(self, typeattr_id):
@@ -215,7 +215,7 @@ class Dimensions(Resource):
     def get(self):
         full = request.args.get('full', True, type=bool)
         dimensions = g.conn.call('get_dimensions', full=full)
-        return jsonify(dimensions=dimensions)
+        return jsonify(dimensions)
 
 
 @api.route('/units/<int:unit_id>')
