@@ -747,7 +747,7 @@ class ResourceAttributes(Resource):
         return jsonify(res_attr)
 
 
-@api.route('/resource_attribute/<int:res_attr_id>')
+@api.route('/resource_attributes/<int:res_attr_id>')
 class ResourceAttribute(Resource):
 
     @api.doc(
@@ -759,7 +759,7 @@ class ResourceAttribute(Resource):
         unit = res_attr.get('unit', '')
         data_type = res_attr.get('data_type', '')
         description = res_attr.get('description', '')
-        properties = res_attr.get('properties', {})
+        properties = res_attr.get('properties') or {}
         resp = g.conn.call(
             'update_resource_attribute',
             resource_attr_id=res_attr_id, is_var=is_var, unit=unit, data_type=data_type,
