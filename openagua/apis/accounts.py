@@ -36,7 +36,7 @@ class Passwords(Resource):
 class Databases(Resource):
     def get(self):
         databases = get_data_databases(current_user.id, current_app.config.get('DATA_URL'))
-        return jsonify(databases=databases)
+        return jsonify(databases)
 
     def post(self):
         result, error = add_database(
@@ -47,7 +47,7 @@ class Databases(Resource):
             key=current_app.config['SECRET_ENCRYPT_KEY']
         )
 
-        return jsonify(database=result, error=error)
+        return jsonify(result)
 
 
 @api.route('/databases/<string:url>', doc=False)
@@ -65,7 +65,7 @@ class Database(Resource):
             key=current_app.config['SECRET_ENCRYPT_KEY']
         )
 
-        return jsonify(database=result, error=error)
+        return jsonify(result)
 
     @api.doc(
         description='Delete an external database URL'
