@@ -63,4 +63,4 @@ class Favorite(Resource):
     @api.doc(description='Delete a favorite')
     def delete(self, favorite_id):
         result = delete_favorite(favorite_id=favorite_id)
-        return jsonify(error=result)
+        return jsonify(result)

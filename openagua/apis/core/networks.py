@@ -265,7 +265,7 @@ class AttributeScenarios(Resource):
                             })
                     res_attr_scens[res_type][resource.id] = rattrs
 
-        return jsonify(res_attr_scens=res_attr_scens)
+        return jsonify(res_attr_scens)
 
 
 @api.route('/networks/<int:network_id>/preview_url')
@@ -504,7 +504,7 @@ class Node(Resource):
         method = request.args.get('method', "merge")
         if method == 'delete':
             resp = g.conn.call('delete_node', node_id, True)
-            return 'Node deleted.', 204
+            return 'Success', 204
         elif method == 'merge':
             up_link_id = request.args.get('up_link_id', type=int)
             down_link_id = request.args.get('down_link_id', type=int)
@@ -631,7 +631,7 @@ class Link(Resource):
         if update_types:
             link['types'] = update_types(link, 'LINK')
         updated_link = g.conn.call('update_link', link)
-        return jsonify(link=updated_link)
+        return jsonify(updated_link)
 
     @api.doc(description='Delete a link')
     def delete(self, link_id):

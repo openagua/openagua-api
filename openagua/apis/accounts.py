@@ -86,7 +86,7 @@ class Tokens(Resource):
     )
     def get(self):
         tokens = get_api_keys(current_user.id)
-        return jsonify(tokens=tokens)
+        return jsonify(tokens)
 
     @api.doc(
         description='Add a user token'
