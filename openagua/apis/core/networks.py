@@ -133,6 +133,12 @@ class Network(Resource):
 
         return jsonify(network)
 
+    @api.doc(description='Update a network')
+    def put(self, network_id):
+        network = request.json.get('network')
+        ret = g.conn.call('update_network', network)
+        return jsonify(ret)
+
     @api.doc(description='Patch a network')
     def patch(self, network_id):
 
