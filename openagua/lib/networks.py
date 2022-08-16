@@ -564,13 +564,13 @@ def make_network_thumbnail(network, template):
     if template:
         for tt in template.templatetypes:
             ttypes[tt.id] = tt
-
+            layout = tt.get('layout', {}) or {}
             color = '#000'
             styles[tt.id] = {'stroke': '#000'}
             if 'resource_type' not in tt:
                 continue
             if tt['resource_type'] == 'NODE':
-                svg = tt.layout.get('svg')
+                svg = layout.get('svg')
                 if svg:
                     svg = minidom.parseString(svg)
                     path = svg.getElementsByTagName('path')
@@ -578,7 +578,7 @@ def make_network_thumbnail(network, template):
                         path = path[0]
                         color = path.getAttribute('fill')
             elif tt.resource_type == 'LINK':
-                linestyle = tt.layout.get('linestyle', {})
+                linestyle = layout.get('linestyle', {})
                 if type(linestyle) == str:
                     linestyle = json.loads(linestyle)
                 color = linestyle.get('color', color)

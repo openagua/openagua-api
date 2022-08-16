@@ -501,7 +501,7 @@ class Node(Resource):
     @api.response(204, 'Nothing, if the delete method is used')
     def delete(self, node_id):
         node = g.conn.call('get_node', node_id)
-        method = request.args.get('method', "merge")
+        method = request.args.get('method', 'delete')  # normal delete should be default
         if method == 'delete':
             resp = g.conn.call('delete_node', node_id, True)
             return 'Success', 204
