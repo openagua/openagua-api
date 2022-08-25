@@ -94,9 +94,11 @@ def get_scenario_data(evaluator, **kwargs):
             error = 1
 
         if eval_value is None:
-            eval_value = make_default_value(data_type=data_type, dates=evaluator.dates, default_value=None, time_step=time_step)
+            eval_value = make_default_value(data_type=data_type, dates=evaluator.dates, default_value=None,
+                                            time_step=time_step)
         elif type(eval_value) in [int, float] and 'timeseries' in data_type:
-            eval_value = make_default_value(data_type=data_type, dates=evaluator.dates, default_value=eval_value, time_step=time_step)
+            eval_value = make_default_value(data_type=data_type, dates=evaluator.dates, default_value=eval_value,
+                                            time_step=time_step)
 
         # metadata = json.loads(dataset['value']['metadata'])
         # metadata['use_function'] = metadata.get('use_function', 'N')
@@ -502,7 +504,8 @@ def make_empty_timeseries(scenario, dates_as_string=None, res_info=None):
     return empty_timeseries
 
 
-def get_data_from_hydra(conn, scenarios, networks, nodes, links, ttypes, attrs, include_tags=True, maxrows=100000):
+def get_data_from_hydra(conn, network_id, scenarios, networks, nodes, links, ttypes, attrs, include_tags=True,
+                        maxrows=100000):
     # 1. Get the data
     scenario_ids = list(set(scenarios))
 
@@ -527,12 +530,37 @@ def get_data_from_hydra(conn, scenarios, networks, nodes, links, ttypes, attrs, 
 
     res_attrs = {}
 
+    source_scenario_ids = []
+    source_scenarios = {}
+    for sc in scens:
+        for v in sc['layout'].get('variation', []):
+            if v['scenario_id'] not in source_scenario_ids:
+                source_scenario_ids.append(v['scenario_id'])
+    if source_scenario_ids:
+        source_scenarios = conn.call('get_scenarios', network_id, scenario_ids=source_scenario_ids)
+        source_scenarios = {s['id']: s for s in source_scenarios}
+
     nrows = 0
+
+    perturbations = []
+
     for sc in scens:
         # scen_name = sc.name
 
+        variation = sc.layout.get('variation', [])  # variation = perturbation
+        for v in variation:
+            source_scenario = source_scenarios[v['scenario_id']]
+            variation_sets = {v['id']: v for v in source_scenario['layout'].get('variation_sets', [])}
+            variation_set = variation_sets[v['variation_set_id']]
+            variation_set_name = variation_set['name']
+            if variation_set_name not in perturbations:
+                perturbations.append(variation_set_name)
+
         for rs in sc['resourcescenarios']:
-            value = rs.dataset.value
+            dataset = rs.get('dataset')
+            if not dataset:
+                continue
+            value = rs['dataset']['value']
             if not json.loads(value):
                 if empty_timeseries is None:
                     timesteps = make_timesteps(start=sc.start_time, end=sc.end_time, span=sc.time_step)
@@ -551,9 +579,18 @@ def get_data_from_hydra(conn, scenarios, networks, nodes, links, ttypes, attrs, 
                 res_attrs[rs.resource_attr_id] = g.conn.call('get_resource_attribute', rs.resource_attr_id)
             df['attr_id'] = res_attrs[rs.resource_attr_id].attr_id
 
-            id_vars = ['scenario_id', 'resource_attr_id', 'attr_id', 'date']
-            df = pd.melt(df, id_vars=id_vars, var_name='block',
-                         value_name='value')
+            # # add variations/perturbations
+            for v in variation:
+                source_scenario = source_scenarios[v['scenario_id']]
+                variation_sets = {v['id']: v for v in source_scenario['layout'].get('variation_sets', [])}
+                variation_set = variation_sets[v['variation_set_id']]
+                variation_set_name = variation_set['name']
+                variation_val = v['variation']
+                # variation_name = f'{variation_set_name} {variation_val:02}'
+                df[variation_set_name] = variation_val
+
+            id_vars = ['scenario_id'] + perturbations + ['resource_attr_id', 'attr_id', 'date']
+            df = pd.melt(df, id_vars=id_vars, var_name='block', value_name='value')
 
             nrows += len(df)
             if maxrows and nrows > maxrows:
@@ -565,7 +602,7 @@ def get_data_from_hydra(conn, scenarios, networks, nodes, links, ttypes, attrs, 
 
                 if value_tags:
                     for vt in value_tags:
-                        df[vt.name] = vt.value
+                        df[vt['name']] = vt.value
                         tag_names.append(vt.name)
 
             dfs.append(df)
@@ -579,7 +616,7 @@ def get_data_from_hydra(conn, scenarios, networks, nodes, links, ttypes, attrs, 
     else:
         tag_names = []
 
-    return dfs, tag_names
+    return dfs, perturbations, tag_names
 
 
 def get_data_from_store(network, template_id, scenario, version, network_ids, node_ids, link_ids, attr_ids, root_key,
@@ -654,7 +691,7 @@ def get_data_from_store(network, template_id, scenario, version, network_ids, no
     scenario_key = None
     subscenarios = [1]  # default if no variations
     perturbations = None
-    if version.variations:
+    if version.get('variations'):
         # scenario_key_path = '{}/scenario_key.csv'.format(scenariokey)
         scenario_key_path = '{}/scenario_key.csv'.format(scenariokey)
         if scenario_key_path[0] == '/':
@@ -812,12 +849,15 @@ def get_data_from_store(network, template_id, scenario, version, network_ids, no
         # return bulk_download_data2(current_app.s3fs, resource_type=resource_type, combos=combos,
         #                            scenario_key=scenario_key)
 
-    if node_ids:
-        all_dfs.extend(get_resource_type_data('node', names['node'] if human_readable else node_ids))
-    if link_ids:
-        all_dfs.extend(get_resource_type_data('link', names['link'] if human_readable else link_ids))
-    if network_ids:
-        all_dfs.extend(get_resource_type_data('network', names['network'] if human_readable else network_ids))
+    if node_ids or link_ids or network_ids:
+        dfs = []
+        if node_ids:
+            dfs = get_resource_type_data('node', names['node'] if human_readable else node_ids)
+        elif link_ids:
+            dfs = get_resource_type_data('link', names['link'] if human_readable else link_ids)
+        elif network_ids:
+            dfs = get_resource_type_data('network', names['network'] if human_readable else network_ids)
+        all_dfs.extend(dfs)
 
     tag_names = []
 
@@ -917,8 +957,22 @@ def filter_results_data(conn, filters, project_id=None, network_id=None, templat
         all_versions = scenario.layout.get('versions', [])
 
         if data_location == 'source':
-            dfs, tag_names = get_data_from_hydra(conn, [scenario_id], networks, nodes, links, ttypes, attrs,
-                                                 include_tags=include_tags, maxrows=maxrows)
+
+            parent_ids = layout.get('parent_ids')
+            if parent_ids:
+                # check if child scenarios exist
+                child_scenarios = conn.call('get_scenarios', network_id=network_id, parent_id=scenario_id)
+                if child_scenarios:
+                    scenario_ids = [s['id'] for s in child_scenarios]
+                else:
+                    scenario_ids = [scenario_id]
+
+            else:
+                scenario_ids = [scenario_id]
+
+            dfs, perturbations, tag_names = get_data_from_hydra(
+                conn, network_id, scenario_ids, networks, nodes, links, ttypes, attrs,
+                include_tags=include_tags, maxrows=maxrows)
             data.extend(dfs)
 
         elif data_location in ['s3', 'hdf5']:
@@ -960,7 +1014,7 @@ def filter_results_data(conn, filters, project_id=None, network_id=None, templat
         data = pd.concat(data)
         data.fillna('', inplace=True)
 
-        idx_names = list(data.columns)[:-1] + tag_names
+        idx_names = [c for c in data.columns if c != 'value'] + tag_names
         data.set_index(idx_names, inplace=True)
 
         if agg:
