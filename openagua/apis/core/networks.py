@@ -131,6 +131,7 @@ class Network(Resource):
         elif 'error' in network:
             return make_response(jsonify(network), 403)
 
+        network['scenarios'] = [s for s in network['scenarios'] if not (s['layout'].get('class') == 'results' and s['parent_id'])]
         return jsonify(network)
 
     @api.doc(description='Update a network')
