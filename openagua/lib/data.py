@@ -558,9 +558,13 @@ def get_data_from_hydra(conn, network_id, scenarios, networks, nodes, links, tty
 
         for rs in sc['resourcescenarios']:
             dataset = rs.get('dataset')
+            dataset_id = rs.get('dataset_id')
+            if not dataset and dataset_id:
+                # todo: fix in Hydra, since clearly this is an error
+                dataset = conn.call('get_dataset', dataset_id)
             if not dataset:
                 continue
-            value = rs['dataset']['value']
+            value = dataset['value']
             if not json.loads(value):
                 if empty_timeseries is None:
                     timesteps = make_timesteps(start=sc.start_time, end=sc.end_time, span=sc.time_step)
