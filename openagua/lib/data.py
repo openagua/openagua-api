@@ -590,6 +590,9 @@ def get_data_from_hydra(conn, network_id, scenarios, networks, nodes, links, tty
                 variation_set = variation_sets[v['variation_set_id']]
                 variation_set_name = variation_set['name']
                 variation_val = v['variation']
+                if isinstance(variation_val, dict):
+                    variation_val = variation_val['name']
+
                 # variation_name = f'{variation_set_name} {variation_val:02}'
                 df[variation_set_name] = variation_val
 
