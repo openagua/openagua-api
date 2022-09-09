@@ -1,9 +1,5 @@
-from flask import render_template, send_from_directory, session, request, current_app, jsonify, g
-from openagua.security import login_required, current_user
+from flask import render_template, send_from_directory, session
 from openagua import app
-from openagua.constants import KEY_NAMES
-import urllib.parse
-import hashlib
 
 
 def set_active_network_panel(panel_name):

@@ -10,7 +10,7 @@ class Keys(Resource):
     def get(self):
         names = request.args.getlist('names[]')
         keys = {key: get_key_value(key) for key in names}
-        return jsonify(keys=keys)
+        return jsonify(keys)
 
 
 @api.route('/population_grid', doc=False)
@@ -27,4 +27,4 @@ class PopulationGrid(Resource):
         # image = logDensity.getMapId({'min': 0, 'max': 8, 'palette': 'ffffde'})
         # image = logDensity.getMapId()
         url = image["tile_fetcher"]._url_format  # token no longer needed
-        return jsonify(url=url)
+        return jsonify(url)

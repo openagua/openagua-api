@@ -308,13 +308,12 @@ class PivotResultsData(Resource):
             }
 
             time_step = agg.get('time', {}).get('step')
-            if len(filters.get('scenarios', [])) > 1 or time_step == 'year':
-                if len(set(data.scenario_id)) > 1:
-                    pivot['rows'].append('Scenario')
+            if len(filters.get('scenarios', [])) > 1:
+                pivot['rows'].append('Scenario')
 
             if data_type == 'timeseries':  # TODO: add more types
                 pivot['renderer'] = default_chart_renderer,
-                if not agg.get('space'):
+                if len(filters.get('resources', [])) > 1 and not agg.get('space'):
                     pivot['rows'].append('Feature')
                 if not filters.get('unstack'):
                     pivot['rows'].append('Variable')

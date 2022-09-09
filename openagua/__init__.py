@@ -36,7 +36,7 @@ cors_headers = ['Content-Type', 'Authorization', 'X-API-KEY']
 max_age = 86400
 CORS(app, resources=cors_resources, supports_credentials=True, allow_headers=cors_headers, max_age=max_age)
 
-log_level = logging.ERROR
+log_level = logging.INFO
 
 logging.basicConfig(level=log_level)
 # app = Flask(__name__)
@@ -112,10 +112,6 @@ app.register_blueprint(ping, url_prefix='')
 app.register_blueprint(admin_openagua, url_prefix='')
 # app.register_blueprint(discover, url_prefix='')
 app.register_blueprint(auth0)
-
-# register before requests
-from openagua.request_functions import _load_datauser, _make_connection, make_root_connection
-from openagua.request_functions import _load_active_study
 
 if app.config['INCLUDE_HYDROLOGY']:
     from openagua.hydrology import hydrology
